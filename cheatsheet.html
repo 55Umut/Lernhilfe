@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UML 2.5.1 Cheatsheet - Vollständige Referenz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: white; padding: 30px; line-height: 1.6; }
+        h1 { color: #0EA5E9; font-size: 2.2em; margin-bottom: 10px; }
+        h2 { color: #0EA5E9; font-size: 1.8em; margin: 40px 0 20px 0; padding-bottom: 10px; border-bottom: 3px solid #0EA5E9; }
+        h3 { color: #0284C7; font-size: 1.4em; margin: 25px 0 15px 0; }
+        .section { background: #f8f9fa; border-radius: 12px; padding: 25px; margin: 20px 0; border-left: 5px solid #0EA5E9; }
+        .example { background: white; border: 2px solid #e0e0e0; border-radius: 10px; padding: 20px; margin: 20px 0; }
+        .example.correct { border-color: #28a745; background: #f0fff4; }
+        .example.wrong { border-color: #dc3545; background: #fff5f5; }
+        .example-header { font-weight: bold; margin-bottom: 15px; font-size: 1.1em; }
+        .correct .example-header { color: #28a745; }
+        .wrong .example-header { color: #dc3545; }
+        .info-box { background: #fff3cd; border-left: 5px solid #ffc107; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .info-box h4 { color: #856404; margin-bottom: 10px; }
+        .warning-box { background: #f8d7da; border-left: 5px solid #dc3545; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .warning-box h4 { color: #721c24; margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; }
+        th { background: #0EA5E9; color: white; padding: 12px; text-align: left; }
+        td { padding: 10px 12px; border-bottom: 1px solid #ddd; }
+        tr:hover { background: #f8f9fa; }
+        svg { max-width: 100%; height: auto; display: block; margin: 15px auto; }
+        .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+        .nav-tabs { display: flex; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
+        .nav-tabs a { padding: 12px 20px; background: #0EA5E9; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; }
+        .nav-tabs a:hover { background: #0284C7; }
+        @media (max-width: 768px) { .comparison { grid-template-columns: 1fr; } }
+        @media print { .nav-tabs, .search-container, .dark-toggle { display: none; } h2 { page-break-before: always; } }
+        /* Search */
+        .search-container { position: sticky; top: 0; background: white; padding: 15px 0; z-index: 100; border-bottom: 2px solid #e0e0e0; margin-bottom: 20px; }
+        .search-input { width: 100%; padding: 12px 20px; font-size: 1em; border: 2px solid #0EA5E9; border-radius: 25px; outline: none; }
+        .search-input:focus { box-shadow: 0 0 10px rgba(14,165,233,0.3); }
+        .search-results { font-size: 0.9em; color: #666; margin-top: 8px; }
+        .highlight { background: #fef08a; padding: 2px 4px; border-radius: 3px; }
+        .section.hidden { display: none; }
+        /* Dark Mode */
+        .dark-toggle { position: fixed; bottom: 20px; right: 20px; background: #333; color: white; border: none; padding: 12px 16px; border-radius: 50px; cursor: pointer; font-size: 1.2em; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .dark-toggle:hover { background: #555; }
+        body.dark-mode { background: #1e293b; color: #e2e8f0; }
+        body.dark-mode > p { color: #94a3b8; }
+        body.dark-mode h1, body.dark-mode h2 { color: #38bdf8; border-color: #38bdf8; }
+        body.dark-mode h3 { color: #7dd3fc; }
+        body.dark-mode .section { background: #334155; border-color: #0EA5E9; }
+        body.dark-mode .example { background: #1e293b; border-color: #475569; color: #e2e8f0; }
+        body.dark-mode .example.correct { background: #14532d; border-color: #22c55e; color: #d1fae5; }
+        body.dark-mode .example.correct .example-header { color: #86efac; }
+        body.dark-mode .example.correct p { color: #d1fae5; }
+        body.dark-mode .example.wrong { background: #450a0a; border-color: #ef4444; color: #fecaca; }
+        body.dark-mode .example.wrong .example-header { color: #fca5a5; }
+        body.dark-mode th { background: #0369a1; }
+        body.dark-mode td { border-color: #475569; }
+        body.dark-mode tr:hover { background: #475569; }
+        body.dark-mode table { background: #334155; }
+        body.dark-mode .info-box { background: #422006; border-color: #f59e0b; }
+        body.dark-mode .info-box, body.dark-mode .info-box h4, body.dark-mode .info-box p { color: #fcd34d; }
+        body.dark-mode .warning-box { background: #450a0a; border-color: #ef4444; }
+        body.dark-mode .warning-box, body.dark-mode .warning-box h4, body.dark-mode .warning-box p { color: #fca5a5; }
+        body.dark-mode .nav-tabs a { background: #0369a1; }
+        body.dark-mode .nav-tabs a:hover { background: #0284C7; }
+        body.dark-mode .search-container { background: #1e293b; border-color: #475569; }
+        body.dark-mode .search-input { background: #334155; color: #e2e8f0; border-color: #0EA5E9; }
+    </style>
+</head>
+<body>
+    <h1>📋 UML 2.5.1 Cheatsheet</h1>
+    <p style="color: #666; font-size: 1.1em; margin-bottom: 20px;">Vollständige Referenz nach UML 2.5.1 Standard für IHK-Prüfungen</p>
+    
+    <div class="search-container">
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 Suche nach Begriffen... (z.B. extend, Multiplizität, Guard)" oninput="searchContent()">
+        <div class="search-results" id="searchResults"></div>
+    </div>
+    
+    <div class="nav-tabs">
+        <a href="index.html">🏠 Übersicht</a>
+        <a href="#usecase">🎭 Use-Case</a>
+        <a href="#class">📦 Klassen</a>
+        <a href="#sequence">⏱️ Sequenz</a>
+        <a href="#activity">🔄 Aktivität</a>
+        <a href="#state">📊 Zustand</a>
+        <a href="aufgaben.html">📝 Aufgaben</a>
+        <a href="quiz.html">🎯 Quiz</a>
+        <a href="ihk-training.html">📋 AP2-Training</a>
+        <a href="ap1-training.html">📋 AP1-Training</a>
+    </div>
+
+<!-- ==================== USE-CASE ==================== -->
+<h2 id="usecase">🎭 Use-Case-Diagramm</h2>
+
+<div class="section">
+    <h3>1. Systemgrenze (System Boundary)</h3>
+    <table>
+        <tr><th>Element</th><th>Beschreibung</th></tr>
+        <tr><td><strong>Form</strong></td><td>Rechteck mit abgerundeten Ecken (optional)</td></tr>
+        <tr><td><strong>Systemname</strong></td><td>Oben im Rechteck, zentriert</td></tr>
+        <tr><td><strong>Use Cases</strong></td><td>INNERHALB der Systemgrenze</td></tr>
+        <tr><td><strong>Akteure</strong></td><td>AUSSERHALB der Systemgrenze</td></tr>
+    </table>
+    <div class="example correct">
+        <div class="example-header">✅ Systemgrenze mit Use Cases und Akteuren</div>
+        <svg width="450" height="140" viewBox="0 0 450 140">
+            <rect x="100" y="10" width="250" height="120" rx="5" fill="none" stroke="#333" stroke-width="2"/>
+            <text x="225" y="35" text-anchor="middle" font-family="Arial" font-size="13" font-weight="bold">Online-Shop</text>
+            <ellipse cx="225" cy="85" rx="80" ry="28" fill="#e3f2fd" stroke="#333" stroke-width="1.5"/>
+            <text x="225" y="90" text-anchor="middle" font-family="Arial" font-size="11">Artikel bestellen</text>
+            <circle cx="40" cy="60" r="12" fill="none" stroke="#333" stroke-width="2"/>
+            <line x1="40" y1="72" x2="40" y2="95" stroke="#333" stroke-width="2"/>
+            <line x1="40" y1="80" x2="25" y2="90" stroke="#333" stroke-width="2"/>
+            <line x1="40" y1="80" x2="55" y2="90" stroke="#333" stroke-width="2"/>
+            <line x1="40" y1="95" x2="30" y2="115" stroke="#333" stroke-width="2"/>
+            <line x1="40" y1="95" x2="50" y2="115" stroke="#333" stroke-width="2"/>
+            <text x="40" y="130" text-anchor="middle" font-family="Arial" font-size="10">Kunde</text>
+            <circle cx="410" cy="60" r="12" fill="none" stroke="#333" stroke-width="2"/>
+            <line x1="410" y1="72" x2="410" y2="95" stroke="#333" stroke-width="2"/>
+            <line x1="410" y1="80" x2="395" y2="90" stroke="#333" stroke-width="2"/>
+            <line x1="410" y1="80" x2="425" y2="90" stroke="#333" stroke-width="2"/>
+            <line x1="410" y1="95" x2="400" y2="115" stroke="#333" stroke-width="2"/>
+            <line x1="410" y1="95" x2="420" y2="115" stroke="#333" stroke-width="2"/>
+            <text x="410" y="130" text-anchor="middle" font-family="Arial" font-size="10">Bank</text>
+            <line x1="60" y1="80" x2="145" y2="85" stroke="#333" stroke-width="1.5"/>
+            <line x1="305" y1="85" x2="390" y2="80" stroke="#333" stroke-width="1.5"/>
+        </svg>
+    </div>
+</div>
+
+<div class="section">
+    <h3>2. Akteure (Actors)</h3>
+    <table>
+        <tr><th>Akteurtyp</th><th>Position</th><th>Beschreibung</th><th>Beispiele</th></tr>
+        <tr><td><strong>Primärakteur</strong></td><td><strong>LINKS</strong></td><td>Initiiert die Interaktion, hat ein Ziel</td><td>Kunde, Benutzer, Sachbearbeiter</td></tr>
+        <tr><td><strong>Sekundärakteur</strong></td><td><strong>RECHTS</strong></td><td>Unterstützt das System</td><td>Datenbank, Zahlungsdienst, Bank</td></tr>
+    </table>
+</div>
+
+<div class="section">
+    <h3>3. «include» - MUSS-Beziehung</h3>
+    <table>
+        <tr><th>Element</th><th>Beschreibung</th></tr>
+        <tr><td><strong>Pfeilrichtung</strong></td><td>Basis-UC → Include-UC (zum Eingebundenen)</td></tr>
+        <tr><td><strong>Linie</strong></td><td>GESTRICHELT</td></tr>
+        <tr><td><strong>Bedeutung</strong></td><td>Basis-UC enthält IMMER Include-UC</td></tr>
+    </table>
+    <div class="example correct">
+        <div class="example-header">✅ «include» - Pfeil ZUM eingebundenen UC</div>
+        <svg width="400" height="90" viewBox="0 0 400 90">
+            <defs><marker id="oAInc" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10" fill="none" stroke="#333" stroke-width="1.5"/></marker></defs>
+            <ellipse cx="100" cy="45" rx="85" ry="32" fill="#e3f2fd" stroke="#333" stroke-width="2"/>
+            <text x="100" y="50" text-anchor="middle" font-family="Arial" font-size="12">Artikel bestellen</text>
+            <ellipse cx="310" cy="45" rx="75" ry="28" fill="#c8e6c9" stroke="#2e7d32" stroke-width="2"/>
+            <text x="310" y="50" text-anchor="middle" font-family="Arial" font-size="11">Anmelden</text>
+            <line x1="185" y1="45" x2="230" y2="45" stroke="#333" stroke-width="1.5" stroke-dasharray="8,4" marker-end="url(#oAInc)"/>
+            <text x="208" y="35" text-anchor="middle" font-family="Arial" font-size="10">«include»</text>
+        </svg>
+    </div>
+</div>
+
+<div class="section">
+    <h3>4. «extend» - KANN-Beziehung</h3>
+    <table>
+        <tr><th>Element</th><th>Beschreibung</th></tr>
+        <tr><td><strong>Pfeilrichtung</strong></td><td>Extend-UC → Basis-UC (zum Basis-Use-Case)</td></tr>
+        <tr><td><strong>Linie</strong></td><td>GESTRICHELT</td></tr>
+        <tr><td><strong>Bedeutung</strong></td><td>Extend-UC erweitert Basis OPTIONAL</td></tr>
+        <tr><td><strong>Condition</strong></td><td>OPTIONAL - gibt an WANN erweitert wird</td></tr>
+        <tr><td><strong>Extension Point</strong></td><td>OPTIONAL - gibt an WO erweitert wird</td></tr>
+    </table>
+    <div class="example correct">
+        <div class="example-header">✅ «extend» mit Notizzettel (vollständig)</div>
+        <svg width="560" height="190" viewBox="0 0 560 190">
+            <defs><marker id="oAExt" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10" fill="none" stroke="#333" stroke-width="1.5"/></marker></defs>
+            <ellipse cx="120" cy="100" rx="105" ry="55" fill="#e3f2fd" stroke="#333" stroke-width="2"/>
+            <text x="120" y="82" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold">Artikel bestellen</text>
+            <line x1="30" y1="100" x2="210" y2="100" stroke="#999" stroke-width="1"/>
+            <text x="120" y="118" text-anchor="middle" font-family="Arial" font-size="10" fill="#666">extension points</text>
+            <text x="120" y="135" text-anchor="middle" font-family="Arial" font-size="10" fill="#555">nachWarenkorb</text>
+            <ellipse cx="440" cy="100" rx="90" ry="32" fill="#fff8e1" stroke="#f57c00" stroke-width="2"/>
+            <text x="440" y="105" text-anchor="middle" font-family="Arial" font-size="12">Gutschein einlösen</text>
+            <line x1="350" y1="100" x2="230" y2="100" stroke="#333" stroke-width="1.5" stroke-dasharray="8,4" marker-end="url(#oAExt)"/>
+            <text x="290" y="92" text-anchor="middle" font-family="Arial" font-size="11">«extend»</text>
+            <path d="M248,20 L248,70 L362,70 L362,30 L352,20 Z" fill="#fffde7" stroke="#333" stroke-width="1.5"/>
+            <path d="M352,20 L352,30 L362,30" fill="none" stroke="#333" stroke-width="1"/>
+            <text x="305" y="38" text-anchor="middle" font-family="Arial" font-size="10">condition:</text>
+            <text x="305" y="52" text-anchor="middle" font-family="Arial" font-size="10">{hat Gutschein}</text>
+            <text x="305" y="66" text-anchor="middle" font-family="Arial" font-size="9" fill="#666">ext.point: nachWarenkorb</text>
+            <line x1="290" y1="70" x2="290" y2="90" stroke="#333" stroke-width="1" stroke-dasharray="4,3"/>
+        </svg>
+    </div>
+    <div class="example correct">
+        <div class="example-header">✅ «extend» Kurzform mit [Condition] (prüfungstauglich!)</div>
+        <svg width="480" height="140" viewBox="0 0 480 140">
+            <defs><marker id="oAExt3" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10" fill="none" stroke="#333" stroke-width="1.5"/></marker></defs>
+            <!-- Basis-UC mit Extension Point -->
+            <ellipse cx="120" cy="70" rx="100" ry="50" fill="#e3f2fd" stroke="#333" stroke-width="2"/>
+            <text x="120" y="55" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold">Termin absagen</text>
+            <line x1="30" y1="70" x2="210" y2="70" stroke="#999" stroke-width="1"/>
+            <text x="120" y="90" text-anchor="middle" font-family="Arial" font-size="10" fill="#666" font-style="italic">EP: nachAbsage</text>
+            <!-- Extend-UC -->
+            <ellipse cx="380" cy="70" rx="85" ry="30" fill="#fff8e1" stroke="#f57c00" stroke-width="2"/>
+            <text x="380" y="65" text-anchor="middle" font-family="Arial" font-size="11">Benachrichtigung</text>
+            <text x="380" y="80" text-anchor="middle" font-family="Arial" font-size="11">senden</text>
+            <!-- Pfeil mit Condition in [] -->
+            <line x1="295" y1="70" x2="225" y2="70" stroke="#333" stroke-width="1.5" stroke-dasharray="8,4" marker-end="url(#oAExt3)"/>
+            <text x="260" y="60" text-anchor="middle" font-family="Arial" font-size="11">«extend»</text>
+            <text x="260" y="95" text-anchor="middle" font-family="Arial" font-size="10" fill="#666">[kurzfristig]</text>
+        </svg>
+        <p style="margin-top:10px;"><strong>Kurzform:</strong> Condition direkt am Pfeil in <code>[eckigen Klammern]</code> – kompakter als Notizzettel, für IHK-Prüfungen empfohlen!</p>
+    </div>
+    <div class="example correct">
+        <div class="example-header">✅ «extend» ohne Condition (auch UML 2.5.1 konform!)</div>
+        <svg width="400" height="100" viewBox="0 0 400 100">
+            <defs><marker id="oAExt2" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10" fill="none" stroke="#333" stroke-width="1.5"/></marker></defs>
+            <ellipse cx="100" cy="50" rx="85" ry="32" fill="#e3f2fd" stroke="#333" stroke-width="2"/>
+            <text x="100" y="55" text-anchor="middle" font-family="Arial" font-size="12">Geld abheben</text>
+            <ellipse cx="310" cy="50" rx="75" ry="28" fill="#fff8e1" stroke="#f57c00" stroke-width="2"/>
+            <text x="310" y="55" text-anchor="middle" font-family="Arial" font-size="11">Quittung drucken</text>
+            <line x1="235" y1="50" x2="190" y2="50" stroke="#333" stroke-width="1.5" stroke-dasharray="8,4" marker-end="url(#oAExt2)"/>
+            <text x="212" y="42" text-anchor="middle" font-family="Arial" font-size="10">«extend»</text>
+        </svg>
+    </div>
+</div>
+
+<div class="info-box" style="margin-top:15px; background:#e8f5e9; border-left:4px solid #28a745;">
+    <h4>📝 «extend» Notation - Drei gültige Varianten:</h4>
+    <table style="margin-top:10px; width:100%;">
+        <tr>
+            <th>Variante</th>
+            <th>Extension Point</th>
+            <th>Condition</th>
+            <th>Empfehlung</th>
+        </tr>
+        <tr>
+            <td><strong>Vollform</strong> (Notizzettel)</td>
+            <td>✅ Im Basis-UC</td>
+            <td>✅ Im Notizzettel {}</td>
+            <td>Für komplexe Fälle</td>
+        </tr>
+        <tr>
+            <td><strong>Kurzform</strong></td>
+            <td>✅ Im Basis-UC</td>
+            <td>✅ Am Pfeil []</td>
+            <td>⭐ Für IHK-Prüfungen!</td>
+        </tr>
+        <tr>
+            <td><strong>Minimalform</strong></td>
+            <td>Optional</td>
+            <td>–</td>
+            <td>Wenn Bedingung offensichtlich</td>
+        </tr>
+    </table>
+</div>
+
+<div class="warning-box">
+    <h4>⚠️ Include vs. Extend - Entscheidungshilfe</h4>
+    <table style="margin-top: 15px;">
+        <tr><th>Frage</th><th style="background:#28a745">→ «include»</th><th style="background:#f57c00">→ «extend»</th></tr>
+        <tr><td>Wird es IMMER ausgeführt?</td><td>Ja, ohne Ausnahme</td><td>Nein, nur optional</td></tr>
+        <tr><td>Funktioniert Basis ohne?</td><td>Nein, unvollständig</td><td>Ja, vollständig nutzbar</td></tr>
+        <tr><td><strong>Pfeilrichtung</strong></td><td>Basis → Include</td><td>Extend → Basis</td></tr>
+    </table>
+</div>
+
+<div class="section">
+    <h3>5. Generalisierung (Vererbung)</h3>
+    <div class="example correct">
+        <div class="example-header">✅ Generalisierung - Leeres Dreieck zur Oberklasse</div>
+        <svg width="340" height="190" viewBox="0 0 340 190">
+            <defs><marker id="genA" markerWidth="15" markerHeight="15" refX="14" refY="7.5" orient="auto"><polygon points="0,0 15,7.5 0,15" fill="white" stroke="#333" stroke-width="1.5"/></marker></defs>
+            <!-- Oberakteur: Benutzer -->
+            <circle cx="170" cy="15" r="8" fill="none" stroke="#333" stroke-width="2"/>
+            <line x1="170" y1="23" x2="170" y2="38" stroke="#333" stroke-width="2"/>
+            <line x1="170" y1="29" x2="159" y2="36" stroke="#333" stroke-width="2"/>
+            <line x1="170" y1="29" x2="181" y2="36" stroke="#333" stroke-width="2"/>
+            <line x1="170" y1="38" x2="163" y2="50" stroke="#333" stroke-width="2"/>
+            <line x1="170" y1="38" x2="177" y2="50" stroke="#333" stroke-width="2"/>
+            <text x="170" y="68" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold">Benutzer</text>
+            <!-- Unterakteur: Kunde -->
+            <circle cx="70" cy="115" r="8" fill="none" stroke="#333" stroke-width="2"/>
+            <line x1="70" y1="123" x2="70" y2="138" stroke="#333" stroke-width="2"/>
+            <line x1="70" y1="129" x2="59" y2="136" stroke="#333" stroke-width="2"/>
+            <line x1="70" y1="129" x2="81" y2="136" stroke="#333" stroke-width="2"/>
+            <line x1="70" y1="138" x2="63" y2="150" stroke="#333" stroke-width="2"/>
+            <line x1="70" y1="138" x2="77" y2="150" stroke="#333" stroke-width="2"/>
+            <text x="70" y="170" text-anchor="middle" font-family="Arial" font-size="12">Kunde</text>
+            <!-- Unterakteur: Admin -->
+            <circle cx="270" cy="115" r="8" fill="none" stroke="#333" stroke-width="2"/>
+            <line x1="270" y1="123" x2="270" y2="138" stroke="#333" stroke-width="2"/>
+            <line x1="270" y1="129" x2="259" y2="136" stroke="#333" stroke-width="2"/>
+            <line x1="270" y1="129" x2="281" y2="136" stroke="#333" stroke-width="2"/>
+            <line x1="270" y1="138" x2="263" y2="150" stroke="#333" stroke-width="2"/>
+            <line x1="270" y1="138" x2="277" y2="150" stroke="#333" stroke-width="2"/>
+            <text x="270" y="170" text-anchor="middle" font-family="Arial" font-size="12">Admin</text>
+            <!-- Generalisierungspfeile - enden unterhalb des Textes -->
+            <line x1="82" y1="105" x2="140" y2="85" stroke="#333" stroke-width="1.5" marker-end="url(#genA)"/>
+            <line x1="258" y1="105" x2="200" y2="85" stroke="#333" stroke-width="1.5" marker-end="url(#genA)"/>
+        </svg>
+        <p style="margin-top:10px;"><strong>Leserichtung:</strong> Kunde <em>ist ein</em> Benutzer, Admin <em>ist ein</em> Benutzer</p>
+    </div>
+</div>
+
+<!-- ==================== KLASSENDIAGRAMM ==================== -->
+<h2 id="class">📦 Klassendiagramm</h2>
+
+<div class="section">
+    <h3>1. Klassenaufbau (Drei-Kammer-Notation)</h3>
+    <div class="example correct">
+        <div class="example-header">✅ Vollständige Klasse nach UML 2.5.1</div>
+        <svg width="280" height="170" viewBox="0 0 280 170">
+            <rect x="20" y="10" width="240" height="150" fill="white" stroke="#333" stroke-width="2"/>
+            <rect x="20" y="10" width="240" height="35" fill="#0EA5E9"/>
+            <text x="140" y="33" text-anchor="middle" font-family="Arial" font-size="14" font-weight="bold" fill="white">Kunde</text>
+            <line x1="20" y1="45" x2="260" y2="45" stroke="#333" stroke-width="1"/>
+            <text x="30" y="65" font-family="Courier New" font-size="11">- kundenNr: int</text>
+            <text x="30" y="82" font-family="Courier New" font-size="11">- name: String</text>
+            <text x="30" y="99" font-family="Courier New" font-size="11"># rabatt: double</text>
+            <line x1="20" y1="110" x2="260" y2="110" stroke="#333" stroke-width="1"/>
+            <text x="30" y="130" font-family="Courier New" font-size="11">+ bestellen(): void</text>
+            <text x="30" y="147" font-family="Courier New" font-size="11">- berechneRabatt(): double</text>
+        </svg>
+    </div>
+    <table>
+        <tr><th>Symbol</th><th>Sichtbarkeit</th><th>Zugriff</th></tr>
+        <tr><td><strong>+</strong></td><td>public</td><td>Überall</td></tr>
+        <tr><td><strong>-</strong></td><td>private</td><td>Nur Klasse selbst</td></tr>
+        <tr><td><strong>#</strong></td><td>protected</td><td>Klasse + Unterklassen</td></tr>
+        <tr><td><strong>~</strong></td><td>package</td><td>Gleiches Paket</td></tr>
+    </table>
+</div>
+
+<div class="section">
+    <h3>2. Assoziationen (UML 2.5.1)</h3>
+    <p style="margin-bottom:15px;">Eine <strong>Assoziation</strong> ist eine strukturelle Beziehung zwischen Klassen.</p>
+    
+    <table>
+        <tr><th>Assoziationstyp</th><th>Darstellung</th><th>Bedeutung</th></tr>
+        <tr><td><strong>Einfache Assoziation</strong></td><td>Durchgezogene Linie ohne Pfeil</td><td>Bidirektional (beide kennen sich)</td></tr>
+        <tr><td><strong>Gerichtete Assoziation</strong></td><td>Linie mit offener Pfeilspitze ></td><td>Navigierbar nur in Pfeilrichtung</td></tr>
+        <tr><td><strong>Aggregation</strong></td><td>Linie mit leerer Raute ◇</td><td>"hat ein" - Teil existiert unabhängig</td></tr>
+        <tr><td><strong>Komposition</strong></td><td>Linie mit gefüllter Raute ◆</td><td>"besteht aus" - Teil stirbt mit Ganzem</td></tr>
+    </table>
+
+    <div class="example correct">
+        <div class="example-header">✅ Einfache Assoziation (bidirektional)</div>
+        <svg width="400" height="100" viewBox="0 0 400 100">
+            <rect x="20" y="30" width="120" height="45" fill="white" stroke="#333" stroke-width="2"/>
+            <text x="80" y="58" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold">Student</text>
+            <rect x="260" y="30" width="120" height="45" fill="white" stroke="#333" stroke-width="2"/>
+            <text x="320" y="58" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold">Vorlesung</text>
+            <line x1="140" y1="52" x2="260" y2="52" stroke="#333" stroke-width="2"/>
+            <text x="200" y="42" text-anchor="middle" font-family="Arial" font-size="10">besucht</text>
+            <text x="150" y="70" font-family="Arial" font-size="10">*</text>
+            <text x="250" y="70" font-family="Arial" font-size="10">*</text>
+        </svg>
+        <p>Keine Pfeilspitze = beide Klassen kennen einander</p>
+    </div>
+    
+    <div class="example correct">
+        <div class="example-header">✅ Gerichtete Assoziation (unidirektional)</div>
+        <svg width="400" height="100" viewBox="0 0 400 100">
+            <defs><marker id="navArr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10" fill="none" stroke="#333" stroke-width="1.5"/></marker></defs>
+            <rect x="20" y="30" width="120" height="45" fill="white" stroke="#333" stroke-width="2"/>
+            <text x="80" y="58" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold">Bestellung</text>
+            <rect x="260" y="30" width="120" height="45" fill="white" stroke="#333" stroke-width="2"/>
+            <text x="320" y="58" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold">Kunde</text>
+            <line x1="140" y1="52" x2="255" y2="52" stroke="#333" stroke-width="2" marker-end="url(#navArr)"/>
+            <text x="200" y="42" text-anchor="middle" font-family="Arial" font-size="10">gehörtZu</text>
+            <text x="150" y="70" font-family="Arial" font-size="10">*</text>
+            <text x="250" y="70" font-family="Arial" font-size="10">1</text>
+        </svg>
+        <p>Offene Pfeilspitze = Bestellung kennt Kunde, aber nicht umgekehrt</p>
+    </div>
+</div>
+
+<div class="section">
+    <h3>3. Aggregation vs. Komposition</h3>
+    <div class="comparison">
+        <div class="example correct">
+            <div class="example-header">✅ Aggregation ◇ (leere Raute)</div>
+            <svg width="280" height="90" viewBox="0 0 280 90">
+                <rect x="10" y="30" width="90" height="40" fill="white" stroke="#333" stroke-width="2"/>
+                <text x="55" y="55" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold">Team</text>
+                <rect x="180" y="30" width="90" height="40" fill="white" stroke="#333" stroke-width="2"/>
+                <text x="225" y="55" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold">Mitglied</text>
+                <line x1="110" y1="50" x2="180" y2="50" stroke="#333" stroke-width="2"/>
+                <polygon points="100,50 110,44 120,50 110,56" fill="white" stroke="#333" stroke-width="2"/>
+                <text x="108" y="30" text-anchor="middle" font-family="Arial" font-size="10">1</text>
+                <text x="170" y="30" text-anchor="middle" font-family="Arial" font-size="10">*</text>
+            </svg>
+            <p><strong>"hat ein"</strong> - Mitglied existiert unabhängig</p>
+        </div>
+        <div class="example correct">
+            <div class="example-header">✅ Komposition ◆ (gefüllte Raute)</div>
+            <svg width="280" height="90" viewBox="0 0 280 90">
+                <rect x="10" y="30" width="90" height="40" fill="white" stroke="#333" stroke-width="2"/>
+                <text x="55" y="55" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold">Bestellung</text>
+                <rect x="180" y="30" width="90" height="40" fill="white" stroke="#333" stroke-width="2"/>
+                <text x="225" y="55" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold">Position</text>
+                <line x1="110" y1="50" x2="180" y2="50" stroke="#333" stroke-width="2"/>
+                <polygon points="100,50 110,44 120,50 110,56" fill="#333" stroke="#333" stroke-width="2"/>
+                <text x="108" y="30" text-anchor="middle" font-family="Arial" font-size="10">1</text>
+                <text x="170" y="30" text-anchor="middle" font-family="Arial" font-size="10">1..*</text>
+            </svg>
+            <p><strong>"besteht aus"</strong> - Position existiert nicht ohne Bestellung</p>
+        </div>
+    </div>
+    <div class="warning-box">
+        <h4>⚠️ KRITISCH: Raute IMMER am "Ganzen"!</h4>
+        <p>Team ◇─── Mitglied | Bestellung ◆─── Position</p>
+    </div>
+</div>
+
+<div class="section">
+    <h3>4. Vererbung (Generalisierung)</h3>
+    <div class="example correct">
+        <div class="example-header">✅ Vererbung - Leeres Dreieck △ zur Oberklasse</div>
+        <svg width="400" height="180" viewBox="0 0 400 180">
+            <defs><marker id="inhArr" markerWidth="18" markerHeight="18" refX="17" refY="9" orient="auto"><polygon points="0,0 18,9 0,18" fill="white" stroke="#333" stroke-width="1.5"/></marker></defs>
+            <rect x="130" y="10" width="140" height="50" fill="white" stroke="#333" stroke-width="2"/>
+            <rect x="130" y="10" width="140" height="20" fill="#e0e0e0"/>
+            <text x="200" y="25" text-anchor="middle" font-family="Arial" font-size="11" font-style="italic">Fahrzeug</text>
+            <text x="140" y="48" font-family="Courier New" font-size="10"># geschwindigkeit</text>
+            <rect x="30" y="120" width="100" height="50" fill="white" stroke="#333" stroke-width="2"/>
+            <text x="80" y="150" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold">PKW</text>
+            <rect x="270" y="120" width="100" height="50" fill="white" stroke="#333" stroke-width="2"/>
+            <text x="320" y="150" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold">LKW</text>
+            <line x1="80" y1="120" x2="185" y2="65" stroke="#333" stroke-width="1.5" marker-end="url(#inhArr)"/>
+            <line x1="320" y1="120" x2="215" y2="65" stroke="#333" stroke-width="1.5" marker-end="url(#inhArr)"/>
+        </svg>
+        <p><strong>Kursiv = abstrakte Klasse</strong></p>
+    </div>
+</div>
+
+<div class="section">
+    <h3>5. Multiplizitäten</h3>
+    <table>
+        <tr><th>Notation</th><th>Bedeutung</th><th>Beispiel</th></tr>
+        <tr><td><strong>1</strong></td><td>Genau eins</td><td>Auto hat 1 Motor</td></tr>
+        <tr><td><strong>0..1</strong></td><td>Optional</td><td>Person hat 0..1 Ehepartner</td></tr>
+        <tr><td><strong>*</strong> oder <strong>0..*</strong></td><td>Beliebig viele</td><td>Kunde hat * Bestellungen</td></tr>
+        <tr><td><strong>1..*</strong></td><td>Mindestens eins</td><td>Bestellung hat 1..* Positionen</td></tr>
+    </table>
+</div>
+
+<div class="section">
+    <h3>6. Vollständiges Klassendiagramm-Beispiel</h3>
+    <div class="example correct">
+        <div class="example-header">✅ Online-Shop mit verschiedenen Beziehungstypen</div>
+        <svg width="600" height="280" viewBox="0 0 600 280">
+            <defs>
+                <marker id="clsNav" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10" fill="none" stroke="#333" stroke-width="1.5"/></marker>
+            </defs>
+            <!-- Kunde -->
+            <rect x="20" y="20" width="140" height="90" fill="white" stroke="#333" stroke-width="2"/>
+            <rect x="20" y="20" width="140" height="25" fill="#0EA5E9"/>
+            <text x="90" y="38" text-anchor="middle" font-family="Arial" font-size="11" fill="white" font-weight="bold">Kunde</text>
+            <line x1="20" y1="45" x2="160" y2="45" stroke="#333" stroke-width="1"/>
+            <text x="28" y="60" font-family="Courier New" font-size="9">- name: String</text>
+            <text x="28" y="72" font-family="Courier New" font-size="9">- email: String</text>
+            <line x1="20" y1="80" x2="160" y2="80" stroke="#333" stroke-width="1"/>
+            <text x="28" y="95" font-family="Courier New" font-size="9">+ bestellen()</text>
+            
+            <!-- Bestellung -->
+            <rect x="230" y="20" width="140" height="90" fill="white" stroke="#333" stroke-width="2"/>
+            <rect x="230" y="20" width="140" height="25" fill="#0EA5E9"/>
+            <text x="300" y="38" text-anchor="middle" font-family="Arial" font-size="11" fill="white" font-weight="bold">Bestellung</text>
+            <line x1="230" y1="45" x2="370" y2="45" stroke="#333" stroke-width="1"/>
+            <text x="238" y="60" font-family="Courier New" font-size="9">- bestellNr: int</text>
+            <text x="238" y="72" font-family="Courier New" font-size="9">- datum: Date</text>
+            <line x1="230" y1="80" x2="370" y2="80" stroke="#333" stroke-width="1"/>
+            <text x="238" y="95" font-family="Courier New" font-size="9">+ berechneGesamt()</text>
+            
+            <!-- Position -->
+            <rect x="440" y="20" width="140" height="90" fill="white" stroke="#333" stroke-width="2"/>
+            <rect x="440" y="20" width="140" height="25" fill="#0EA5E9"/>
+            <text x="510" y="38" text-anchor="middle" font-family="Arial" font-size="11" fill="white" font-weight="bold">Position</text>
+            <line x1="440" y1="45" x2="580" y2="45" stroke="#333" stroke-width="1"/>
+            <text x="448" y="60" font-family="Courier New" font-size="9">- menge: int</text>
+            <text x="448" y="72" font-family="Courier New" font-size="9">- einzelpreis: double</text>
+            <line x1="440" y1="80" x2="580" y2="80" stroke="#333" stroke-width="1"/>
+            <text x="448" y="95" font-family="Courier New" font-size="9">+ berechneSumme()</text>
+            
+            <!-- Produkt -->
+            <rect x="440" y="170" width="140" height="90" fill="white" stroke="#333" stroke-width="2"/>
+            <rect x="440" y="170" width="140" height="25" fill="#0EA5E9"/>
+            <text x="510" y="188" text-anchor="middle" font-family="Arial" font-size="11" fill="white" font-weight="bold">Produkt</text>
+            <line x1="440" y1="195" x2="580" y2="195" stroke="#333" stroke-width="1"/>
+            <text x="448" y="210" font-family="Courier New" font-size="9">- name: String</text>
+            <text x="448" y="222" font-family="Courier New" font-size="9">- preis: double</text>
+            <line x1="440" y1="230" x2="580" y2="230" stroke="#333" stroke-width="1"/>
+            <text x="448" y="245" font-family="Courier New" font-size="9">+ getDetails()</text>
+            
+            <!-- Assoziationen -->
+            <!-- Einfache Assoziation: Kunde - Bestellung -->
+            <line x1="160" y1="65" x2="230" y2="65" stroke="#333" stroke-width="2"/>
+            <text x="173" y="58" font-family="Arial" font-size="9">1</text>
+            <text x="215" y="58" font-family="Arial" font-size="9">*</text>
+            
+            <!-- Komposition: Bestellung - Position -->
+            <line x1="380" y1="65" x2="440" y2="65" stroke="#333" stroke-width="2"/>
+            <polygon points="370,65 380,59 390,65 380,71" fill="#333" stroke="#333" stroke-width="1"/>
+            <text x="393" y="58" font-family="Arial" font-size="9">1</text>
+            <text x="428" y="58" font-family="Arial" font-size="9">1..*</text>
+            
+            <!-- Gerichtete Assoziation: Position - Produkt -->
+            <line x1="510" y1="110" x2="510" y2="165" stroke="#333" stroke-width="2" marker-end="url(#clsNav)"/>
+            <text x="520" y="140" font-family="Arial" font-size="9">1</text>
+        </svg>
+        <p><strong>Legende:</strong> ── Assoziation | ◆─ Komposition | ─> Gerichtete Assoziation</p>
+    </div>
+</div>
+
+<!-- ==================== SEQUENZDIAGRAMM ==================== -->
+<h2 id="sequence">⏱️ Sequenzdiagramm</h2>
+
+<div class="section">
+    <h3>1. Grundelemente</h3>
+    <table>
+        <tr><th>Element</th><th>Darstellung</th><th>Beschreibung</th></tr>
+        <tr><td><strong>Objekt/Lebenslinie</strong></td><td>Rechteck + gestrichelte Linie</td><td>:Klassenname oder objekt:Klasse</td></tr>
+        <tr><td><strong>Aktivierungsbalken</strong></td><td>Schmales Rechteck auf Lebenslinie</td><td>Objekt führt gerade Code aus</td></tr>
+        <tr><td><strong>Nachricht</strong></td><td>Horizontaler Pfeil</td><td>Methodenaufruf</td></tr>
+    </table>
+</div>
+
+<div class="section">
+    <h3>2. Nachrichtentypen (UML 2.5.1)</h3>
+    <table>
+        <tr><th>Typ</th><th>Linie</th><th>Pfeilspitze</th><th>Bedeutung</th></tr>
+        <tr><td><strong>Synchron</strong></td><td>Durchgezogen</td><td><strong>GEFÜLLT ▶</strong></td><td>Sender wartet auf Antwort</td></tr>
+        <tr><td><strong>Asynchron</strong></td><td>Durchgezogen</td><td><strong>OFFEN ></strong></td><td>Sender wartet NICHT</td></tr>
+        <tr><td><strong>Rückgabe</strong></td><td><strong>GESTRICHELT</strong></td><td><strong>OFFEN ></strong></td><td>Antwort auf synchronen Aufruf</td></tr>
+    </table>
+    
+    <div class="example correct">
+        <div class="example-header">✅ Synchrone Nachricht - GEFÜLLTE Spitze</div>
+        <svg width="320" height="50" viewBox="0 0 320 50">
+            <defs><marker id="syncM" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9 Z" fill="#333"/></marker></defs>
+            <line x1="20" y1="25" x2="280" y2="25" stroke="#333" stroke-width="2" marker-end="url(#syncM)"/>
+            <text x="150" y="18" text-anchor="middle" font-family="Arial" font-size="11">methode(parameter)</text>
+        </svg>
+    </div>
+    
+    <div class="example correct">
+        <div class="example-header">✅ Rückgabe - GESTRICHELT + offene Spitze</div>
+        <svg width="320" height="50" viewBox="0 0 320 50">
+            <defs><marker id="retM" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#333" stroke-width="1.5"/></marker></defs>
+            <line x1="280" y1="25" x2="20" y2="25" stroke="#333" stroke-width="1.5" stroke-dasharray="8,4" marker-end="url(#retM)"/>
+            <text x="150" y="18" text-anchor="middle" font-family="Arial" font-size="11">ergebnis</text>
+        </svg>
+    </div>
+</div>
+
+<div class="section">
+    <h3>3. Kombinierte Fragmente</h3>
+    <table>
+        <tr><th>Fragment</th><th>Bedeutung</th><th>Verwendung</th></tr>
+        <tr><td><strong>alt</strong></td><td>Alternative</td><td>if-else (mit [guards])</td></tr>
+        <tr><td><strong>opt</strong></td><td>Optional</td><td>if ohne else</td></tr>
+        <tr><td><strong>loop</strong></td><td>Schleife</td><td>while/for [min,max]</td></tr>
+        <tr><td><strong>par</strong></td><td>Parallel</td><td>Gleichzeitige Ausführung</td></tr>
+        <tr><td><strong>break</strong></td><td>Abbruch</td><td>Vorzeitiger Ausstieg</td></tr>
+    </table>
+</div>
+
+<div class="section">
+    <h3>4. Vollständiges Sequenzdiagramm-Beispiel</h3>
+    <div class="example correct">
+        <div class="example-header">✅ Login-Prozess mit alt-Fragment</div>
+        <svg width="550" height="350" viewBox="0 0 550 350">
+            <defs>
+                <marker id="seqSync" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9 Z" fill="#333"/></marker>
+                <marker id="seqRet" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#333" stroke-width="1.5"/></marker>
+            </defs>
+            
+            <!-- Lebenslinien -->
+            <rect x="40" y="20" width="80" height="35" fill="#e3f2fd" stroke="#333" stroke-width="2"/>
+            <text x="80" y="43" text-anchor="middle" font-family="Arial" font-size="11">:Benutzer</text>
+            <line x1="80" y1="55" x2="80" y2="340" stroke="#333" stroke-width="1" stroke-dasharray="6,4"/>
+            
+            <rect x="190" y="20" width="90" height="35" fill="#e3f2fd" stroke="#333" stroke-width="2"/>
+            <text x="235" y="43" text-anchor="middle" font-family="Arial" font-size="11">:LoginController</text>
+            <line x1="235" y1="55" x2="235" y2="340" stroke="#333" stroke-width="1" stroke-dasharray="6,4"/>
+            
+            <rect x="350" y="20" width="90" height="35" fill="#e3f2fd" stroke="#333" stroke-width="2"/>
+            <text x="395" y="43" text-anchor="middle" font-family="Arial" font-size="11">:Datenbank</text>
+            <line x1="395" y1="55" x2="395" y2="340" stroke="#333" stroke-width="1" stroke-dasharray="6,4"/>
+            
+            <!-- Aktivierungsbalken -->
+            <rect x="76" y="75" width="8" height="30" fill="#0EA5E9"/>
+            <rect x="231" y="85" width="8" height="180" fill="#0EA5E9"/>
+            <rect x="391" y="115" width="8" height="40" fill="#0EA5E9"/>
+            
+            <!-- Nachrichten -->
+            <line x1="84" y1="85" x2="226" y2="85" stroke="#333" stroke-width="2" marker-end="url(#seqSync)"/>
+            <text x="155" y="78" text-anchor="middle" font-family="Arial" font-size="10">login(user, pass)</text>
+            
+            <line x1="239" y1="120" x2="386" y2="120" stroke="#333" stroke-width="2" marker-end="url(#seqSync)"/>
+            <text x="312" y="113" text-anchor="middle" font-family="Arial" font-size="10">prüfeCredentials()</text>
+            
+            <line x1="391" y1="150" x2="244" y2="150" stroke="#333" stroke-width="1.5" stroke-dasharray="8,4" marker-end="url(#seqRet)"/>
+            <text x="317" y="143" text-anchor="middle" font-family="Arial" font-size="10">result</text>
+            
+            <!-- alt-Fragment -->
+            <rect x="60" y="175" width="420" height="130" fill="none" stroke="#333" stroke-width="2"/>
+            <rect x="60" y="175" width="35" height="18" fill="#f0f0f0" stroke="#333" stroke-width="1"/>
+            <text x="77" y="188" text-anchor="middle" font-family="Arial" font-size="10" font-weight="bold">alt</text>
+            
+            <!-- [gültig] -->
+            <text x="70" y="208" font-family="Arial" font-size="10">[gültig]</text>
+            <rect x="76" y="215" width="8" height="25" fill="#c8e6c9"/>
+            <line x1="239" y1="225" x2="89" y2="225" stroke="#333" stroke-width="1.5" stroke-dasharray="8,4" marker-end="url(#seqRet)"/>
+            <text x="164" y="218" text-anchor="middle" font-family="Arial" font-size="10">loginErfolgreich()</text>
+            
+            <!-- Trennlinie -->
+            <line x1="60" y1="250" x2="480" y2="250" stroke="#333" stroke-width="1" stroke-dasharray="4,4"/>
+            
+            <!-- [ungültig] -->
+            <text x="70" y="268" font-family="Arial" font-size="10">[ungültig]</text>
+            <rect x="76" y="275" width="8" height="25" fill="#ffcdd2"/>
+            <line x1="239" y1="285" x2="89" y2="285" stroke="#333" stroke-width="1.5" stroke-dasharray="8,4" marker-end="url(#seqRet)"/>
+            <text x="164" y="278" text-anchor="middle" font-family="Arial" font-size="10">fehlerMeldung()</text>
+        </svg>
+        <p><strong>Legende:</strong> ▶ Synchrone Nachricht | - - -> Rückgabe | alt = if-else mit [Guards]</p>
+    </div>
+</div>
+
+<!-- ==================== AKTIVITÄTSDIAGRAMM ==================== -->
+<h2 id="activity">🔄 Aktivitätsdiagramm</h2>
+
+<div class="section">
+    <h3>1. Grundelemente</h3>
+    <table>
+        <tr><th>Element</th><th>Symbol</th><th>Beschreibung</th></tr>
+        <tr><td><strong>Startknoten</strong></td><td>● (gefüllter Kreis)</td><td>Beginn des Ablaufs</td></tr>
+        <tr><td><strong>Endknoten</strong></td><td>◉ (Kreis mit Punkt)</td><td>Ende des Ablaufs</td></tr>
+        <tr><td><strong>Aktivität</strong></td><td>Abgerundetes Rechteck</td><td>Auszuführende Aktion</td></tr>
+        <tr><td><strong>Entscheidung (Decision)</strong></td><td>◇ Raute (1 rein, n raus)</td><td>Verzweigung mit [Guards]</td></tr>
+        <tr><td><strong>Zusammenführung (Merge)</strong></td><td>◇ Raute (n rein, 1 raus)</td><td>Alternative Pfade zusammenführen</td></tr>
+        <tr><td><strong>Aufspaltung (Fork)</strong></td><td>▬ Balken (1 rein, n raus)</td><td>Parallele Pfade starten</td></tr>
+        <tr><td><strong>Synchronisation (Join)</strong></td><td>▬ Balken (n rein, 1 raus)</td><td>Parallele Pfade synchronisieren</td></tr>
+    </table>
+</div>
+
+<div class="warning-box">
+    <h4>⚠️ KRITISCH: Richtige Zusammenführung!</h4>
+    <table style="margin-top:10px;">
+        <tr><th>Verzweigung</th><th>Zusammenführung</th><th>Bedeutung</th></tr>
+        <tr><td>◇ Entscheidung (Decision)</td><td>◇ <strong>Merge</strong> (Raute!)</td><td>ENTWEDER-ODER Pfade</td></tr>
+        <tr><td>▬ Fork (Balken)</td><td>▬ <strong>Join</strong> (Balken!)</td><td>UND Pfade (parallel)</td></tr>
+    </table>
+    <p style="margin-top:10px;"><strong>Merkregel:</strong> Raute → Raute | Balken → Balken</p>
+</div>
+
+<div class="section">
+    <h3>2. Entscheidung + Merge (Alternative Pfade)</h3>
+    <div class="example correct">
+        <div class="example-header">✅ Entscheidung (◇) wird mit Merge (◇) zusammengeführt</div>
+        <svg width="400" height="220" viewBox="0 0 400 220">
+            <defs><marker id="actArr" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#333" stroke-width="1.5"/></marker></defs>
+            <circle cx="200" cy="20" r="8" fill="#333"/>
+            <line x1="200" y1="28" x2="200" y2="45" stroke="#333" stroke-width="1.5" marker-end="url(#actArr)"/>
+            <polygon points="200,55 175,80 200,105 225,80" fill="white" stroke="#333" stroke-width="2"/>
+            <text x="200" y="85" text-anchor="middle" font-family="Arial" font-size="10">?</text>
+            <line x1="175" y1="80" x2="80" y2="80" stroke="#333" stroke-width="1.5"/>
+            <line x1="80" y1="80" x2="80" y2="120" stroke="#333" stroke-width="1.5" marker-end="url(#actArr)"/>
+            <text x="125" y="72" font-family="Arial" font-size="9">[ja]</text>
+            <line x1="225" y1="80" x2="320" y2="80" stroke="#333" stroke-width="1.5"/>
+            <line x1="320" y1="80" x2="320" y2="120" stroke="#333" stroke-width="1.5" marker-end="url(#actArr)"/>
+            <text x="275" y="72" font-family="Arial" font-size="9">[nein]</text>
+            <rect x="30" y="130" width="100" height="30" rx="15" fill="#c8e6c9" stroke="#333" stroke-width="2"/>
+            <text x="80" y="150" text-anchor="middle" font-family="Arial" font-size="10">Aktion A</text>
+            <rect x="270" y="130" width="100" height="30" rx="15" fill="#ffcdd2" stroke="#333" stroke-width="2"/>
+            <text x="320" y="150" text-anchor="middle" font-family="Arial" font-size="10">Aktion B</text>
+            <line x1="80" y1="160" x2="80" y2="175" stroke="#333" stroke-width="1.5"/>
+            <line x1="80" y1="175" x2="185" y2="175" stroke="#333" stroke-width="1.5"/>
+            <line x1="320" y1="160" x2="320" y2="175" stroke="#333" stroke-width="1.5"/>
+            <line x1="320" y1="175" x2="215" y2="175" stroke="#333" stroke-width="1.5"/>
+            <polygon points="200,165 185,175 200,185 215,175" fill="white" stroke="#333" stroke-width="2"/>
+            <line x1="200" y1="185" x2="200" y2="200" stroke="#333" stroke-width="1.5" marker-end="url(#actArr)"/>
+            <circle cx="200" cy="212" r="8" fill="white" stroke="#333" stroke-width="2"/>
+            <circle cx="200" cy="212" r="4" fill="#333"/>
+        </svg>
+    </div>
+</div>
+
+<div class="section">
+    <h3>3. Fork + Join (Parallele Pfade)</h3>
+    <div class="example correct">
+        <div class="example-header">✅ Fork (▬) wird mit Join (▬) synchronisiert</div>
+        <svg width="400" height="220" viewBox="0 0 400 220">
+            <defs><marker id="actArr2" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#333" stroke-width="1.5"/></marker></defs>
+            <circle cx="200" cy="20" r="8" fill="#333"/>
+            <line x1="200" y1="28" x2="200" y2="45" stroke="#333" stroke-width="1.5" marker-end="url(#actArr2)"/>
+            <rect x="80" y="55" width="240" height="6" fill="#333"/>
+            <line x1="120" y1="61" x2="120" y2="85" stroke="#333" stroke-width="1.5" marker-end="url(#actArr2)"/>
+            <line x1="280" y1="61" x2="280" y2="85" stroke="#333" stroke-width="1.5" marker-end="url(#actArr2)"/>
+            <rect x="60" y="95" width="120" height="30" rx="15" fill="#e3f2fd" stroke="#333" stroke-width="2"/>
+            <text x="120" y="115" text-anchor="middle" font-family="Arial" font-size="10">Parallel A</text>
+            <rect x="220" y="95" width="120" height="30" rx="15" fill="#e3f2fd" stroke="#333" stroke-width="2"/>
+            <text x="280" y="115" text-anchor="middle" font-family="Arial" font-size="10">Parallel B</text>
+            <line x1="120" y1="125" x2="120" y2="145" stroke="#333" stroke-width="1.5"/>
+            <line x1="280" y1="125" x2="280" y2="145" stroke="#333" stroke-width="1.5"/>
+            <rect x="80" y="150" width="240" height="6" fill="#333"/>
+            <line x1="200" y1="156" x2="200" y2="180" stroke="#333" stroke-width="1.5" marker-end="url(#actArr2)"/>
+            <circle cx="200" cy="195" r="8" fill="white" stroke="#333" stroke-width="2"/>
+            <circle cx="200" cy="195" r="4" fill="#333"/>
+        </svg>
+        <p><strong>Join wartet auf ALLE parallelen Pfade!</strong></p>
+    </div>
+</div>
+
+<!-- ==================== ZUSTANDSDIAGRAMM ==================== -->
+<h2 id="state">📊 Zustandsdiagramm</h2>
+
+<div class="section">
+    <h3>1. Zustände</h3>
+    <table>
+        <tr><th>Element</th><th>Darstellung</th><th>Beschreibung</th></tr>
+        <tr><td><strong>Einfacher Zustand</strong></td><td>Abgerundetes Rechteck</td><td>Zustand ohne interne Aktionen</td></tr>
+        <tr><td><strong>Zustand mit Aktionen</strong></td><td>Zweigeteilt: Name | entry/do/exit</td><td>Zustand mit internen Aktionen</td></tr>
+        <tr><td><strong>Startzustand</strong></td><td>● (gefüllter Kreis)</td><td>Initialer Zustand</td></tr>
+        <tr><td><strong>Endzustand</strong></td><td>◉ (Kreis mit Punkt)</td><td>Finaler Zustand</td></tr>
+    </table>
+</div>
+
+<div class="section">
+    <h3>2. Interne Aktionen</h3>
+    <table>
+        <tr><th>Aktion</th><th>Wann?</th><th>Beispiel</th></tr>
+        <tr><td><strong>entry /</strong></td><td>Beim Betreten</td><td>entry / lampeAn()</td></tr>
+        <tr><td><strong>do /</strong></td><td>Während (unterbrechbar)</td><td>do / blinken()</td></tr>
+        <tr><td><strong>exit /</strong></td><td>Beim Verlassen</td><td>exit / lampeAus()</td></tr>
+    </table>
+    <div class="example correct">
+        <div class="example-header">✅ Zustand mit internen Aktionen</div>
+        <svg width="220" height="100" viewBox="0 0 220 100">
+            <rect x="20" y="10" width="180" height="80" rx="10" fill="#e3f2fd" stroke="#333" stroke-width="2"/>
+            <rect x="20" y="10" width="180" height="28" rx="10 10 0 0" fill="#0EA5E9"/>
+            <text x="110" y="30" text-anchor="middle" font-family="Arial" font-size="12" fill="white" font-weight="bold">Aktiv</text>
+            <line x1="20" y1="38" x2="200" y2="38" stroke="#333" stroke-width="1"/>
+            <text x="30" y="55" font-family="Courier New" font-size="10">entry / statusAktiv()</text>
+            <text x="30" y="70" font-family="Courier New" font-size="10">do / verarbeitung()</text>
+            <text x="30" y="85" font-family="Courier New" font-size="10">exit / speichern()</text>
+        </svg>
+    </div>
+</div>
+
+<div class="section">
+    <h3>3. Übergänge (Transitionen)</h3>
+    <div class="example correct">
+        <div class="example-header">✅ Übergangsnotation: Ereignis [Guard] / Aktion</div>
+        <svg width="450" height="80" viewBox="0 0 450 80">
+            <defs><marker id="stA" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#333" stroke-width="1.5"/></marker></defs>
+            <rect x="20" y="20" width="100" height="45" rx="8" fill="#e3f2fd" stroke="#333" stroke-width="2"/>
+            <text x="70" y="48" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold">Zustand A</text>
+            <rect x="330" y="20" width="100" height="45" rx="8" fill="#e3f2fd" stroke="#333" stroke-width="2"/>
+            <text x="380" y="48" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold">Zustand B</text>
+            <line x1="120" y1="42" x2="320" y2="42" stroke="#333" stroke-width="1.5" marker-end="url(#stA)"/>
+            <text x="220" y="32" text-anchor="middle" font-family="Arial" font-size="10">ereignis [guard] / aktion</text>
+        </svg>
+        <p><strong>Format:</strong> Ereignis [Guard] / Aktion - <strong>alle Teile sind optional!</strong></p>
+    </div>
+</div>
+
+<div class="section">
+    <h3>4. Vollständiges Zustandsdiagramm-Beispiel</h3>
+    <div class="example correct">
+        <div class="example-header">✅ Bestellung-Lebenszyklus</div>
+        <svg width="580" height="250" viewBox="0 0 580 250">
+            <defs><marker id="stArr" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#333" stroke-width="1.5"/></marker></defs>
+            
+            <!-- Startzustand -->
+            <circle cx="40" cy="70" r="10" fill="#333"/>
+            <line x1="50" y1="70" x2="75" y2="70" stroke="#333" stroke-width="1.5" marker-end="url(#stArr)"/>
+            
+            <!-- Zustand: Neu -->
+            <rect x="85" y="50" width="90" height="40" rx="8" fill="#fff3e0" stroke="#333" stroke-width="2"/>
+            <text x="130" y="75" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold">Neu</text>
+            
+            <!-- Zustand: Bezahlt -->
+            <rect x="220" y="50" width="90" height="40" rx="8" fill="#e8f5e9" stroke="#333" stroke-width="2"/>
+            <text x="265" y="75" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold">Bezahlt</text>
+            
+            <!-- Zustand: Versendet -->
+            <rect x="355" y="50" width="90" height="40" rx="8" fill="#e3f2fd" stroke="#333" stroke-width="2"/>
+            <text x="400" y="75" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold">Versendet</text>
+            
+            <!-- Zustand: Zugestellt -->
+            <rect x="490" y="50" width="80" height="40" rx="8" fill="#c8e6c9" stroke="#333" stroke-width="2"/>
+            <text x="530" y="75" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold">Zugestellt</text>
+            
+            <!-- Zustand: Storniert -->
+            <rect x="152" y="170" width="90" height="40" rx="8" fill="#ffcdd2" stroke="#c62828" stroke-width="2"/>
+            <text x="197" y="195" text-anchor="middle" font-family="Arial" font-size="11" font-weight="bold">Storniert</text>
+            
+            <!-- Transitionen -->
+            <line x1="175" y1="70" x2="215" y2="70" stroke="#333" stroke-width="1.5" marker-end="url(#stArr)"/>
+            <text x="195" y="60" text-anchor="middle" font-family="Arial" font-size="9">zahlung_ok</text>
+            
+            <line x1="310" y1="70" x2="350" y2="70" stroke="#333" stroke-width="1.5" marker-end="url(#stArr)"/>
+            <text x="330" y="60" text-anchor="middle" font-family="Arial" font-size="9">versenden</text>
+            
+            <line x1="445" y1="70" x2="485" y2="70" stroke="#333" stroke-width="1.5" marker-end="url(#stArr)"/>
+            <text x="465" y="60" text-anchor="middle" font-family="Arial" font-size="9">zugestellt</text>
+            
+            <!-- Stornieren -->
+            <line x1="130" y1="90" x2="130" y2="130" stroke="#333" stroke-width="1.5"/>
+            <line x1="130" y1="130" x2="180" y2="130" stroke="#333" stroke-width="1.5"/>
+            <line x1="180" y1="130" x2="180" y2="165" stroke="#333" stroke-width="1.5" marker-end="url(#stArr)"/>
+            <text x="100" y="115" font-family="Arial" font-size="9">stornieren</text>
+            
+            <line x1="265" y1="90" x2="265" y2="130" stroke="#333" stroke-width="1.5"/>
+            <line x1="265" y1="130" x2="214" y2="130" stroke="#333" stroke-width="1.5"/>
+            <line x1="214" y1="130" x2="214" y2="165" stroke="#333" stroke-width="1.5" marker-end="url(#stArr)"/>
+            <text x="290" y="115" font-family="Arial" font-size="9">stornieren</text>
+            <text x="290" y="128" font-family="Arial" font-size="8" fill="#666">/ rückerstattung()</text>
+            
+            <!-- Endzustände -->
+            <circle cx="530" cy="130" r="12" fill="white" stroke="#333" stroke-width="2"/>
+            <circle cx="530" cy="130" r="7" fill="#333"/>
+            <line x1="530" y1="90" x2="530" y2="115" stroke="#333" stroke-width="1.5" marker-end="url(#stArr)"/>
+            
+            <circle cx="197" cy="240" r="12" fill="white" stroke="#333" stroke-width="2"/>
+            <circle cx="197" cy="240" r="7" fill="#333"/>
+            <line x1="197" y1="210" x2="197" y2="225" stroke="#333" stroke-width="1.5" marker-end="url(#stArr)"/>
+        </svg>
+        <p><strong>Legende:</strong> ● Start | ◉ Ende | Transitionen: ereignis [guard] / aktion</p>
+    </div>
+</div>
+
+<div class="section">
+    <h3>5. Pseudozustände: Choice & Junction (Legacy)</h3>
+    <div class="warning-box" style="background:#fff8e1; border-left:4px solid #ffc107;">
+        <h4>📜 Historischer Hintergrund</h4>
+        <p>In <strong>UML 1.x</strong> (1997-2005) wurden Rauten häufig für Verzweigungen in Zustandsdiagrammen verwendet – 
+        ähnlich wie in Aktivitätsdiagrammen. Seit <strong>UML 2.0</strong> werden Guards bevorzugt direkt an Transitionen geschrieben.</p>
+        <p style="margin-top:10px;"><strong>⚠️ Ältere IHK-Materialien und Prüfungen könnten noch die Rauten-Notation verwenden!</strong></p>
+    </div>
+    
+    <table style="margin-top:15px;">
+        <tr><th>Symbol</th><th>Name</th><th>UML-Version</th><th>Bedeutung</th></tr>
+        <tr><td style="font-size:1.5em;">◇</td><td><strong>Choice</strong></td><td>UML 2.x</td><td>Dynamische Entscheidung (Guard zur Laufzeit ausgewertet)</td></tr>
+        <tr><td style="font-size:1.5em;">◇</td><td><strong>Junction</strong></td><td>UML 1.x/2.x</td><td>Statische Verzweigung / Zusammenführung</td></tr>
+    </table>
+    
+    <div class="example correct" style="margin-top:15px;">
+        <div class="example-header">UML 1.x Stil (mit Raute) – noch in älteren Prüfungen zu finden</div>
+        <svg width="400" height="170" viewBox="0 0 400 170">
+            <defs><marker id="stArrLeg" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#333" stroke-width="1.5"/></marker></defs>
+            <!-- Zustand Aktiv -->
+            <rect x="20" y="55" width="90" height="40" rx="10" fill="#e3f2fd" stroke="#333" stroke-width="2"/>
+            <text x="65" y="80" text-anchor="middle" font-family="Arial" font-size="11">Aktiv</text>
+            <!-- Pfeil zur Raute -->
+            <line x1="110" y1="75" x2="155" y2="75" stroke="#333" stroke-width="1.5" marker-end="url(#stArrLeg)"/>
+            <text x="133" y="65" text-anchor="middle" font-family="Arial" font-size="9">timeout</text>
+            <!-- Raute (Choice) -->
+            <polygon points="175,75 195,55 215,75 195,95" fill="white" stroke="#333" stroke-width="2"/>
+            <!-- [versuche < 3] -->
+            <line x1="215" y1="75" x2="270" y2="75" stroke="#333" stroke-width="1.5" marker-end="url(#stArrLeg)"/>
+            <text x="243" y="65" text-anchor="middle" font-family="Arial" font-size="8">[versuche&lt;3]</text>
+            <rect x="280" y="55" width="100" height="40" rx="10" fill="#fff3e0" stroke="#333" stroke-width="2"/>
+            <text x="330" y="80" text-anchor="middle" font-family="Arial" font-size="11">Wiederholung</text>
+            <!-- [else] -->
+            <line x1="195" y1="95" x2="195" y2="125" stroke="#333" stroke-width="1.5" marker-end="url(#stArrLeg)"/>
+            <text x="215" y="115" font-family="Arial" font-size="8">[else]</text>
+            <rect x="145" y="130" width="100" height="30" rx="8" fill="#ffcdd2" stroke="#333" stroke-width="2"/>
+            <text x="195" y="150" text-anchor="middle" font-family="Arial" font-size="10">Gesperrt</text>
+        </svg>
+    </div>
+    
+    <div class="example correct" style="margin-top:15px;">
+        <div class="example-header">✅ UML 2.x Stil (Guards direkt an Transition) – EMPFOHLEN</div>
+        <svg width="400" height="150" viewBox="0 0 400 150">
+            <defs><marker id="stArrMod" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#333" stroke-width="1.5"/></marker></defs>
+            <!-- Zustand Aktiv -->
+            <rect x="20" y="10" width="90" height="40" rx="10" fill="#e3f2fd" stroke="#333" stroke-width="2"/>
+            <text x="65" y="35" text-anchor="middle" font-family="Arial" font-size="11">Aktiv</text>
+            <!-- [versuche < 3] -->
+            <line x1="110" y1="30" x2="250" y2="30" stroke="#333" stroke-width="1.5" marker-end="url(#stArrMod)"/>
+            <text x="180" y="20" text-anchor="middle" font-family="Arial" font-size="9">timeout [versuche&lt;3]</text>
+            <rect x="260" y="10" width="100" height="40" rx="10" fill="#fff3e0" stroke="#333" stroke-width="2"/>
+            <text x="310" y="35" text-anchor="middle" font-family="Arial" font-size="11">Wiederholung</text>
+            <!-- [else] -->
+            <line x1="65" y1="50" x2="65" y2="80" stroke="#333" stroke-width="1.5"/>
+            <line x1="65" y1="80" x2="145" y2="80" stroke="#333" stroke-width="1.5"/>
+            <line x1="145" y1="80" x2="145" y2="105" stroke="#333" stroke-width="1.5" marker-end="url(#stArrMod)"/>
+            <text x="105" y="70" text-anchor="middle" font-family="Arial" font-size="9">timeout [else]</text>
+            <rect x="95" y="110" width="100" height="30" rx="8" fill="#ffcdd2" stroke="#333" stroke-width="2"/>
+            <text x="145" y="130" text-anchor="middle" font-family="Arial" font-size="10">Gesperrt</text>
+        </svg>
+        <p style="margin-top:10px;"><strong>Vorteil:</strong> Kompakter, keine Extra-Symbole nötig</p>
+    </div>
+    
+    <div class="info-box" style="margin-top:15px;">
+        <h4>💡 Prüfungstipp:</h4>
+        <p>Wenn du in einer Prüfung eine <strong>Raute im Zustandsdiagramm</strong> siehst → es ist eine <strong>Choice/Junction</strong> aus UML 1.x-Zeiten.</p>
+        <p>Für eigene Diagramme: Verwende besser <strong>Guards direkt an der Transition</strong> – das ist der moderne UML 2.x Standard.</p>
+    </div>
+</div>
+
+<!-- ==================== SCHNELLREFERENZ ==================== -->
+<h2>📌 Schnellreferenz - Pfeilspitzen</h2>
+
+<div class="section">
+    <table>
+        <tr><th>Diagramm</th><th>Element</th><th>Linie</th><th>Spitze</th></tr>
+        <tr><td rowspan="4"><strong>Use-Case</strong></td><td>Assoziation</td><td>Durchgezogen</td><td>KEINE</td></tr>
+        <tr><td>«include»</td><td>Gestrichelt</td><td>OFFEN ></td></tr>
+        <tr><td>«extend»</td><td>Gestrichelt</td><td>OFFEN ></td></tr>
+        <tr><td>Generalisierung</td><td>Durchgezogen</td><td>LEERES △</td></tr>
+        <tr><td rowspan="4"><strong>Klasse</strong></td><td>Assoziation</td><td>Durchgezogen</td><td>KEINE (bidirektional)</td></tr>
+        <tr><td>Gerichtete Assoziation</td><td>Durchgezogen</td><td>OFFEN > (navigierbar)</td></tr>
+        <tr><td>Vererbung</td><td>Durchgezogen</td><td>LEERES △</td></tr>
+        <tr><td>Aggreg./Komp.</td><td>Durchgezogen</td><td>◇/◆ am Ganzen</td></tr>
+        <tr><td rowspan="3"><strong>Sequenz</strong></td><td>Synchron</td><td>Durchgezogen</td><td><strong>GEFÜLLT ▶</strong></td></tr>
+        <tr><td>Asynchron</td><td>Durchgezogen</td><td>OFFEN ></td></tr>
+        <tr><td>Rückgabe</td><td><strong>Gestrichelt</strong></td><td>OFFEN ></td></tr>
+        <tr><td><strong>Aktivität</strong></td><td>Kontrollfluss</td><td>Durchgezogen</td><td>OFFEN ></td></tr>
+        <tr><td><strong>Zustand</strong></td><td>Transition</td><td>Durchgezogen</td><td>OFFEN ></td></tr>
+    </table>
+</div>
+
+<div class="info-box">
+    <h4>💡 UML 2.5.1 Referenz</h4>
+    <p>Dieses Cheatsheet basiert auf dem offiziellen UML 2.5.1 Standard (OMG Document formal/2017-12-05).</p>
+    <p><strong>Quelle:</strong> <a href="https://www.omg.org/spec/UML/2.5.1" target="_blank">https://www.omg.org/spec/UML/2.5.1</a></p>
+</div>
+
+<p style="text-align:center; margin-top:40px; color:#666;">
+    🎓 UML 2.5.1 Cheatsheet | <a href="aufgaben.html" style="color:#0EA5E9;">Zu den Aufgaben</a>
+</p>
+<p style="text-align:center; margin-top:20px; padding:15px; background:#f8f9fa; color:#999; font-size:0.9em;">
+    
+</p>
+
+<button class="dark-toggle" onclick="toggleDarkMode()" title="Dark Mode">🌙</button>
+
+<script>
+function searchContent() {
+    const query = document.getElementById('searchInput').value.toLowerCase().trim();
+    const sections = document.querySelectorAll('.section, h2, .info-box, .warning-box');
+    const resultsDiv = document.getElementById('searchResults');
+    
+    if (query.length < 2) {
+        sections.forEach(s => s.classList.remove('hidden'));
+        resultsDiv.textContent = '';
+        return;
+    }
+    
+    let matchCount = 0;
+    sections.forEach(section => {
+        const text = section.textContent.toLowerCase();
+        if (text.includes(query)) {
+            section.classList.remove('hidden');
+            matchCount++;
+        } else {
+            section.classList.add('hidden');
+        }
+    });
+    
+    resultsDiv.textContent = matchCount > 0 
+        ? `${matchCount} Treffer für "${query}"` 
+        : `Keine Treffer für "${query}"`;
+}
+
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('uml_dark_mode', isDark);
+    document.querySelector('.dark-toggle').textContent = isDark ? '☀️' : '🌙';
+}
+
+window.onload = function() {
+    if (localStorage.getItem('uml_dark_mode') === 'true') {
+        document.body.classList.add('dark-mode');
+        document.querySelector('.dark-toggle').textContent = '☀️';
+    }
+};
+</script>
+</body>
+</html>

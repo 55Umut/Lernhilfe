@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP1 UML-Prüfungstraining</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+        header { background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white; padding: 30px; text-align: center; }
+        header h1 { font-size: 2.2em; margin-bottom: 8px; }
+        header p { opacity: 0.9; font-size: 1.1em; }
+        nav { display: flex; background: #f8f9fa; border-bottom: 3px solid #17a2b8; justify-content: center; gap: 10px; padding: 10px; flex-wrap: wrap; }
+        nav a { padding: 15px 25px; text-decoration: none; font-size: 1em; font-weight: 600; color: #666; border-radius: 10px; }
+        nav a:hover { background: rgba(23, 162, 184, 0.1); color: #17a2b8; }
+        nav a.active { background: #17a2b8; color: white; }
+        .content { padding: 30px; }
+        
+        /* IHK-Stil Header */
+        .ihk-header { background: #f8f9fa; border: 2px solid #333; padding: 20px; margin-bottom: 30px; }
+        .ihk-header h2 { color: #c41e3a; font-size: 1.5em; margin-bottom: 10px; }
+        .ihk-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px; }
+        .ihk-meta-item { background: white; padding: 10px 15px; border-left: 4px solid #17a2b8; }
+        .ihk-meta-item strong { display: block; color: #333; }
+        .ihk-meta-item span { color: #666; font-size: 0.95em; }
+        
+        /* Ausgangssituation */
+        .ausgangssituation { background: #d1ecf1; border: 2px solid #17a2b8; padding: 20px; margin-bottom: 30px; border-radius: 10px; }
+        .ausgangssituation h3 { color: #0c5460; margin-bottom: 15px; font-size: 1.2em; }
+        .ausgangssituation p { color: #333; line-height: 1.7; margin-bottom: 10px; }
+        
+        /* Handlungsschritt */
+        .handlungsschritt { background: white; border: 2px solid #ddd; border-radius: 15px; margin-bottom: 25px; overflow: hidden; }
+        .handlungsschritt-header { background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .handlungsschritt-header h3 { font-size: 1.2em; }
+        .punkte { background: white; color: #17a2b8; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+        .handlungsschritt-body { padding: 20px; }
+        .aufgabe-text { line-height: 1.8; color: #333; margin-bottom: 20px; }
+        .aufgabe-text p { margin-bottom: 12px; }
+        
+        /* Multiple Choice */
+        .mc-container { margin: 20px 0; }
+        .mc-frage { font-weight: 600; margin-bottom: 15px; color: #333; }
+        .mc-option { display: flex; align-items: flex-start; gap: 10px; padding: 12px 15px; margin: 8px 0; background: #f8f9fa; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .mc-option:hover { border-color: #17a2b8; background: #e8f4f8; }
+        .mc-option.selected { border-color: #17a2b8; background: #d1ecf1; }
+        .mc-option input { margin-top: 3px; }
+        .mc-option label { cursor: pointer; flex: 1; }
+        
+        /* Zuordnung */
+        .zuordnung-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+        .zuordnung-links, .zuordnung-rechts { background: #f8f9fa; padding: 15px; border-radius: 10px; }
+        .zuordnung-links h4, .zuordnung-rechts h4 { color: #17a2b8; margin-bottom: 15px; font-size: 1em; }
+        .zuordnung-item { background: white; padding: 10px 15px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .zuordnung-item .nummer { background: #17a2b8; color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9em; }
+        .zuordnung-input { width: 40px; text-align: center; border: 2px solid #ddd; border-radius: 5px; padding: 5px; font-weight: bold; }
+        
+        /* SVG Container */
+        .svg-container { background: white; border: 1px solid #ddd; padding: 15px; margin: 15px 0; text-align: center; overflow-x: auto; }
+        
+        /* Antwortbereich */
+        .antwort-bereich { background: #f0f8ff; border: 2px dashed #17a2b8; padding: 20px; margin-top: 20px; border-radius: 10px; min-height: 150px; }
+        .antwort-bereich h4 { color: #17a2b8; margin-bottom: 15px; }
+        
+        /* Lösung */
+        .loesung { margin-top: 20px; }
+        .loesung-btn { background: #28a745; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1em; }
+        .loesung-btn:hover { background: #218838; }
+        .loesung-content { display: none; background: #e8f5e9; border: 2px solid #28a745; padding: 20px; margin-top: 15px; border-radius: 10px; }
+        .loesung-content.show { display: block; }
+        .loesung-content h4 { color: #155724; margin-bottom: 15px; }
+        .bewertung { background: #d4edda; padding: 15px; border-radius: 8px; margin-top: 15px; }
+        .bewertung h5 { color: #155724; margin-bottom: 10px; }
+        .bewertung ul { padding-left: 20px; color: #155724; }
+        .bewertung li { margin: 5px 0; }
+        
+        /* Hinweise */
+        .hinweis { background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 15px; margin: 15px 0; border-radius: 0 8px 8px 0; }
+        .hinweis strong { color: #0c5460; }
+        
+        /* Timer */
+        .timer-container { position: sticky; top: 20px; background: white; border: 2px solid #17a2b8; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: center; z-index: 100; }
+        .timer { font-size: 2em; font-weight: bold; color: #17a2b8; font-family: monospace; }
+        .timer.warning { color: #ffc107; }
+        .timer.danger { color: #dc3545; }
+        .timer-controls { margin-top: 10px; }
+        .timer-controls button { margin: 0 5px; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; }
+        .timer-start { background: #28a745; color: white; }
+        .timer-pause { background: #ffc107; color: #333; }
+        .timer-reset { background: #dc3545; color: white; }
+        
+        /* Teilaufgaben */
+        .teilaufgabe { margin: 20px 0; padding: 15px; background: #fafafa; border-left: 3px solid #17a2b8; }
+        .teilaufgabe-header { font-weight: 600; color: #17a2b8; margin-bottom: 10px; }
+        
+        /* Print Styles */
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; }
+            nav, .timer-container, .loesung-btn, footer { display: none; }
+            .handlungsschritt { page-break-inside: avoid; }
+            .loesung-content { display: block !important; }
+        }
+        
+        @media (max-width: 768px) {
+            .zuordnung-container { grid-template-columns: 1fr; }
+        }
+        
+        footer { background: #f8f9fa; padding: 15px; text-align: center; color: #666; font-size: 0.9em; }
+        /* Dark Mode */
+        .dark-toggle { position: fixed; bottom: 20px; right: 20px; background: #333; color: white; border: none; padding: 12px 16px; border-radius: 50px; cursor: pointer; font-size: 1.2em; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .dark-toggle:hover { background: #555; }
+        body.dark-mode { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); }
+        body.dark-mode .container { background: #1e293b; color: #e2e8f0; }
+        body.dark-mode header { background: linear-gradient(135deg, #0e7490 0%, #155e75 100%); }
+        body.dark-mode header p { color: rgba(255,255,255,0.9); }
+        body.dark-mode nav { background: #334155; border-color: #17a2b8; }
+        body.dark-mode nav a { color: #94a3b8; }
+        body.dark-mode nav a:hover { background: rgba(23,162,184,0.2); color: #17a2b8; }
+        body.dark-mode .ihk-header { background: #334155; border-color: #475569; }
+        body.dark-mode .ihk-header h2 { color: #f87171; }
+        body.dark-mode .ihk-meta-item { background: #1e293b; }
+        body.dark-mode .ausgangssituation { background: #164e63; border-color: #0891b2; }
+        body.dark-mode .ausgangssituation h3 { color: #a5f3fc; }
+        body.dark-mode .ausgangssituation p { color: #e2e8f0; }
+        body.dark-mode .handlungsschritt { background: #334155; border-color: #475569; }
+        body.dark-mode .handlungsschritt-body { background: #1e293b; }
+        body.dark-mode .aufgabe-text, body.dark-mode .aufgabe-text p { color: #e2e8f0; }
+        body.dark-mode .mc-option { background: #334155; border-color: #475569; color: #e2e8f0; }
+        body.dark-mode .mc-option:hover { background: #1e4e5f; border-color: #17a2b8; }
+        body.dark-mode .antwort-bereich { background: #0c4a6e; border-color: #0EA5E9; }
+        body.dark-mode .timer-container { background: #334155; border-color: #17a2b8; }
+        body.dark-mode .loesung-content { background: #1e293b; border-color: #22c55e; }
+        body.dark-mode .bewertung { background: #14532d; border-color: #22c55e; }
+        body.dark-mode .bewertung, body.dark-mode .bewertung h4, body.dark-mode .bewertung li { color: #86efac; }
+        body.dark-mode .hinweis { background: #422006; border-color: #f59e0b; }
+        body.dark-mode .hinweis, body.dark-mode .hinweis strong { color: #fcd34d; }
+        body.dark-mode footer { background: #334155; color: #94a3b8; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🎯 AP1 UML-Prüfungstraining</h1>
+        <p>Abschlussprüfung Teil 1 – UML-Modellierung</p>
+    </header>
+    <nav>
+        <a href="index.html">🏠 Übersicht</a>
+        <a href="aufgaben.html">📝 Aufgaben</a>
+        <a href="cheatsheet.html">📋 Cheatsheet</a>
+        <a href="quiz.html">🎯 Quiz</a>
+        <a href="ihk-training.html">📋 AP2-Training</a>
+        <a href="ap1-training.html" class="active">📋 AP1-Training</a>
+    </nav>
+    
+    <div class="content">
+        <!-- Timer -->
+        <div class="timer-container">
+            <div>⏱️ Prüfungszeit</div>
+            <div class="timer" id="timer">45:00</div>
+            <div class="timer-controls">
+                <button class="timer-start" onclick="startTimer()">▶ Start</button>
+                <button class="timer-pause" onclick="pauseTimer()">⏸ Pause</button>
+                <button class="timer-reset" onclick="resetTimer()">🔄 Reset</button>
+            </div>
+        </div>
+        
+        <!-- IHK Header -->
+        <div class="ihk-header">
+            <h2>Abschlussprüfung Teil 1 – UML-Aufgaben</h2>
+            <p>Softwaremodellierung mit UML 2.5.1</p>
+            <div class="ihk-meta">
+                <div class="ihk-meta-item">
+                    <strong>4 Handlungsschritte</strong>
+                    <span>mit Teilaufgaben</span>
+                </div>
+                <div class="ihk-meta-item">
+                    <strong>45 Minuten</strong>
+                    <span>Bearbeitungszeit</span>
+                </div>
+                <div class="ihk-meta-item">
+                    <strong>50 Punkte</strong>
+                    <span>Gesamtpunktzahl</span>
+                </div>
+                <div class="ihk-meta-item">
+                    <strong>UML 2.5.1</strong>
+                    <span>Standardnotation</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ausgangssituation -->
+        <div class="ausgangssituation">
+            <h3>📋 Handlungssituation</h3>
+            <p>Sie arbeiten als Auszubildender bei der <strong>SoftDev GmbH</strong>, einem Softwareentwicklungsunternehmen. 
+            Ihr Team entwickelt eine neue Anwendung zur <strong>Bibliotheksverwaltung</strong> für die Stadtbibliothek.</p>
+            
+            <p>Im Rahmen der Anforderungsanalyse und des Softwareentwurfs sollen Sie verschiedene UML-Diagramme erstellen 
+            und analysieren. Die Bibliothek verwaltet Bücher, Zeitschriften und DVDs. Kunden können Medien ausleihen, 
+            vormerken und ihre Ausleihen verlängern.</p>
+        </div>
+
+        <!-- HANDLUNGSSCHRITT 1: Use-Case-Diagramm -->
+        <div class="handlungsschritt">
+            <div class="handlungsschritt-header">
+                <h3>Handlungsschritt 1 – Use-Case-Diagramm</h3>
+                <span class="punkte">14 Punkte</span>
+            </div>
+            <div class="handlungsschritt-body">
+                <div class="aufgabe-text">
+                    <p>Die Anforderungen an das Bibliothekssystem wurden in einem Gespräch mit dem Kunden ermittelt.</p>
+                </div>
+                
+                <div class="teilaufgabe">
+                    <div class="teilaufgabe-header">a) Use-Case-Diagramm erstellen (10 Punkte)</div>
+                    <p>Erstellen Sie ein Use-Case-Diagramm mit folgenden Anforderungen:</p>
+                    <ul style="margin: 10px 0 15px 20px; line-height: 1.8;">
+                        <li><strong>Akteure:</strong> Kunde (Primärakteur), Bibliothekar (Primärakteur)</li>
+                        <li><strong>Use Cases:</strong></li>
+                        <ul style="margin: 5px 0 10px 20px;">
+                            <li>Medium ausleihen</li>
+                            <li>Medium zurückgeben</li>
+                            <li>Ausleihe verlängern</li>
+                            <li>Kundenkonto prüfen (wird von "Medium ausleihen" immer benötigt)</li>
+                            <li>Mahnung erstellen (erweitert "Medium zurückgeben" bei Fristüberschreitung)</li>
+                        </ul>
+                        <li>Der Kunde kann nur "Medium ausleihen" und "Ausleihe verlängern" nutzen</li>
+                        <li>Der Bibliothekar kann alle Use Cases nutzen</li>
+                    </ul>
+                    
+                    <div class="hinweis">
+                        <strong>💡 UML 2.5.1 Hinweis:</strong> «include» zeigt zum eingebundenen UC, «extend» zeigt zum Basis-UC. 
+                        Bei «extend» muss der Basis-UC einen <strong>Extension Point (EP)</strong> enthalten und/oder eine <strong>Condition</strong> angegeben werden!
+                    </div>
+                    
+                    <div class="antwort-bereich">
+                        <h4>📝 Ihre Lösung:</h4>
+                        <div style="height: 280px; border: 1px dashed #ccc; margin-top: 15px; background: white;"></div>
+                    </div>
+                </div>
+                
+                <div class="teilaufgabe">
+                    <div class="teilaufgabe-header">b) Theoriefrage (4 Punkte)</div>
+                    <div class="mc-container">
+                        <p class="mc-frage">Was ist der Unterschied zwischen «include» und «extend»?</p>
+                        <div class="mc-option" onclick="selectMC(this, 'mc1')">
+                            <input type="radio" name="mc1" id="mc1a">
+                            <label for="mc1a"><strong>A)</strong> «include» zeigt optionale Funktionalität, «extend» zeigt zwingende Funktionalität</label>
+                        </div>
+                        <div class="mc-option" onclick="selectMC(this, 'mc1')">
+                            <input type="radio" name="mc1" id="mc1b">
+                            <label for="mc1b"><strong>B)</strong> «include» bindet einen Use Case immer ein, «extend» erweitert optional unter bestimmten Bedingungen</label>
+                        </div>
+                        <div class="mc-option" onclick="selectMC(this, 'mc1')">
+                            <input type="radio" name="mc1" id="mc1c">
+                            <label for="mc1c"><strong>C)</strong> «include» und «extend» sind synonym und können beliebig ausgetauscht werden</label>
+                        </div>
+                        <div class="mc-option" onclick="selectMC(this, 'mc1')">
+                            <input type="radio" name="mc1" id="mc1d">
+                            <label for="mc1d"><strong>D)</strong> «include» verbindet Akteure, «extend» verbindet Use Cases</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="loesung">
+                    <button class="loesung-btn" onclick="toggleLoesung('loesung1')">✅ Musterlösung anzeigen</button>
+                    <div class="loesung-content" id="loesung1">
+                        <h4>Musterlösung – Handlungsschritt 1</h4>
+                        
+                        <p><strong>a) Use-Case-Diagramm:</strong></p>
+                        <div class="svg-container">
+                            <svg width="600" height="340" viewBox="0 0 600 340">
+                                <defs>
+                                    <marker id="ucArrow1" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                                        <path d="M1,1 L9,5 L1,9" fill="none" stroke="#333" stroke-width="1.5"/>
+                                    </marker>
+                                </defs>
+                                
+                                <!-- Systemgrenze -->
+                                <rect x="120" y="15" width="360" height="310" rx="5" fill="none" stroke="#333" stroke-width="2"/>
+                                <text x="300" y="35" text-anchor="middle" font-family="Arial" font-size="12" font-weight="bold">Bibliotheksverwaltung</text>
+                                
+                                <!-- Kunde (links) -->
+                                <circle cx="50" cy="100" r="12" fill="none" stroke="#333" stroke-width="2"/>
+                                <line x1="50" y1="112" x2="50" y2="140" stroke="#333" stroke-width="2"/>
+                                <line x1="50" y1="125" x2="30" y2="138" stroke="#333" stroke-width="2"/>
+                                <line x1="50" y1="125" x2="70" y2="138" stroke="#333" stroke-width="2"/>
+                                <line x1="50" y1="140" x2="40" y2="165" stroke="#333" stroke-width="2"/>
+                                <line x1="50" y1="140" x2="60" y2="165" stroke="#333" stroke-width="2"/>
+                                <text x="50" y="180" text-anchor="middle" font-family="Arial" font-size="10">Kunde</text>
+                                
+                                <!-- Bibliothekar (links unten) -->
+                                <circle cx="50" cy="250" r="12" fill="none" stroke="#333" stroke-width="2"/>
+                                <line x1="50" y1="262" x2="50" y2="285" stroke="#333" stroke-width="2"/>
+                                <line x1="50" y1="272" x2="30" y2="282" stroke="#333" stroke-width="2"/>
+                                <line x1="50" y1="272" x2="70" y2="282" stroke="#333" stroke-width="2"/>
+                                <line x1="50" y1="285" x2="40" y2="305" stroke="#333" stroke-width="2"/>
+                                <line x1="50" y1="285" x2="60" y2="305" stroke="#333" stroke-width="2"/>
+                                <text x="50" y="320" text-anchor="middle" font-family="Arial" font-size="10">Bibliothekar</text>
+                                
+                                <!-- Use Cases -->
+                                <ellipse cx="200" cy="70" rx="65" ry="22" fill="#d1ecf1" stroke="#333" stroke-width="1.5"/>
+                                <text x="200" y="75" text-anchor="middle" font-family="Arial" font-size="10">Medium ausleihen</text>
+                                
+                                <ellipse cx="400" cy="70" rx="65" ry="22" fill="#fff3e0" stroke="#333" stroke-width="1.5"/>
+                                <text x="400" y="75" text-anchor="middle" font-family="Arial" font-size="10">Kundenkonto prüfen</text>
+                                
+                                <ellipse cx="200" cy="140" rx="65" ry="22" fill="#d1ecf1" stroke="#333" stroke-width="1.5"/>
+                                <text x="200" y="145" text-anchor="middle" font-family="Arial" font-size="10">Ausleihe verlängern</text>
+                                
+                                <!-- Medium zurückgeben MIT Extension Point -->
+                                <ellipse cx="200" cy="220" rx="65" ry="28" fill="#d1ecf1" stroke="#333" stroke-width="1.5"/>
+                                <text x="200" y="215" text-anchor="middle" font-family="Arial" font-size="10">Medium zurückgeben</text>
+                                <line x1="135" y1="225" x2="265" y2="225" stroke="#333" stroke-width="1"/>
+                                <text x="200" y="238" text-anchor="middle" font-family="Arial" font-size="8" font-style="italic">EP: Fristüberschreitung</text>
+                                
+                                <ellipse cx="400" cy="220" rx="65" ry="22" fill="#e8f5e9" stroke="#333" stroke-width="1.5"/>
+                                <text x="400" y="225" text-anchor="middle" font-family="Arial" font-size="10">Mahnung erstellen</text>
+                                
+                                <!-- Assoziationen Kunde -->
+                                <line x1="70" y1="100" x2="135" y2="75" stroke="#333" stroke-width="1.5"/>
+                                <line x1="70" y1="115" x2="135" y2="140" stroke="#333" stroke-width="1.5"/>
+                                
+                                <!-- Assoziationen Bibliothekar -->
+                                <line x1="70" y1="250" x2="135" y2="75" stroke="#333" stroke-width="1.5"/>
+                                <line x1="70" y1="255" x2="135" y2="140" stroke="#333" stroke-width="1.5"/>
+                                <line x1="70" y1="265" x2="135" y2="220" stroke="#333" stroke-width="1.5"/>
+                                
+                                <!-- include: Medium ausleihen -> Kundenkonto prüfen -->
+                                <line x1="265" y1="70" x2="335" y2="70" stroke="#333" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ucArrow1)"/>
+                                <text x="300" y="60" font-family="Arial" font-size="9" text-anchor="middle">«include»</text>
+                                
+                                <!-- extend: Mahnung erstellen -> Medium zurückgeben (mit Condition) -->
+                                <line x1="335" y1="220" x2="265" y2="220" stroke="#333" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ucArrow1)"/>
+                                <text x="300" y="210" font-family="Arial" font-size="9" text-anchor="middle">«extend»</text>
+                                <text x="300" y="250" font-family="Arial" font-size="8" text-anchor="middle">[Frist überschritten]</text>
+                            </svg>
+                        </div>
+                        
+                        <div class="hinweis">
+                            <strong>UML 2.5.1 Hinweis:</strong> «extend» benötigt einen <strong>Extension Point (EP)</strong> im Basis-UC 
+                            und/oder eine <strong>Condition</strong> in eckigen Klammern, die angibt, wann die Erweiterung greift.
+                        </div>
+                        
+                        <p><strong>b) Theoriefrage:</strong> <strong>B)</strong> «include» bindet einen Use Case immer ein, «extend» erweitert optional unter bestimmten Bedingungen</p>
+                        
+                        <div class="bewertung">
+                            <h5>Bewertung:</h5>
+                            <ul>
+                                <li>Systemgrenze mit Namen (2P)</li>
+                                <li>Akteure korrekt platziert (2P)</li>
+                                <li>Use Cases als Ellipsen (2P)</li>
+                                <li>«include» mit Pfeil ZUM eingebundenen UC (2P)</li>
+                                <li>«extend» mit Pfeil ZUM Basis-UC (2P)</li>
+                                <li>MC korrekt (4P)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HANDLUNGSSCHRITT 2: Klassendiagramm -->
+        <div class="handlungsschritt">
+            <div class="handlungsschritt-header">
+                <h3>Handlungsschritt 2 – Klassendiagramm</h3>
+                <span class="punkte">14 Punkte</span>
+            </div>
+            <div class="handlungsschritt-body">
+                <div class="aufgabe-text">
+                    <p>Für das Bibliothekssystem soll ein Klassendiagramm erstellt werden.</p>
+                </div>
+                
+                <div class="teilaufgabe">
+                    <div class="teilaufgabe-header">a) Klassendiagramm-Analyse (6 Punkte)</div>
+                    <p>Analysieren Sie das folgende Klassendiagramm:</p>
+                    
+                    <div class="svg-container">
+                        <svg width="600" height="280" viewBox="0 0 600 280">
+                            <!-- Medium (Oberklasse) -->
+                            <rect x="220" y="10" width="160" height="80" fill="white" stroke="#333" stroke-width="2"/>
+                            <rect x="220" y="10" width="160" height="22" fill="#17a2b8"/>
+                            <text x="300" y="26" text-anchor="middle" font-family="Arial" font-size="11" fill="white" font-weight="bold">Medium</text>
+                            <line x1="220" y1="32" x2="380" y2="32" stroke="#333" stroke-width="1"/>
+                            <text x="228" y="48" font-family="Courier New" font-size="9">- medienNr: String</text>
+                            <text x="228" y="60" font-family="Courier New" font-size="9">- titel: String</text>
+                            <text x="228" y="72" font-family="Courier New" font-size="9">- verfuegbar: boolean</text>
+                            <line x1="220" y1="78" x2="380" y2="78" stroke="#333" stroke-width="1"/>
+                            
+                            <!-- Buch -->
+                            <rect x="60" y="150" width="140" height="80" fill="white" stroke="#333" stroke-width="2"/>
+                            <rect x="60" y="150" width="140" height="22" fill="#28a745"/>
+                            <text x="130" y="166" text-anchor="middle" font-family="Arial" font-size="11" fill="white" font-weight="bold">Buch</text>
+                            <line x1="60" y1="172" x2="200" y2="172" stroke="#333" stroke-width="1"/>
+                            <text x="68" y="188" font-family="Courier New" font-size="9">- autor: String</text>
+                            <text x="68" y="200" font-family="Courier New" font-size="9">- isbn: String</text>
+                            <text x="68" y="212" font-family="Courier New" font-size="9">- seiten: int</text>
+                            <line x1="60" y1="218" x2="200" y2="218" stroke="#333" stroke-width="1"/>
+                            
+                            <!-- DVD -->
+                            <rect x="230" y="150" width="140" height="80" fill="white" stroke="#333" stroke-width="2"/>
+                            <rect x="230" y="150" width="140" height="22" fill="#28a745"/>
+                            <text x="300" y="166" text-anchor="middle" font-family="Arial" font-size="11" fill="white" font-weight="bold">DVD</text>
+                            <line x1="230" y1="172" x2="370" y2="172" stroke="#333" stroke-width="1"/>
+                            <text x="238" y="188" font-family="Courier New" font-size="9">- regisseur: String</text>
+                            <text x="238" y="200" font-family="Courier New" font-size="9">- laufzeit: int</text>
+                            <text x="238" y="212" font-family="Courier New" font-size="9">- fsk: int</text>
+                            <line x1="230" y1="218" x2="370" y2="218" stroke="#333" stroke-width="1"/>
+                            
+                            <!-- Zeitschrift -->
+                            <rect x="400" y="150" width="140" height="80" fill="white" stroke="#333" stroke-width="2"/>
+                            <rect x="400" y="150" width="140" height="22" fill="#28a745"/>
+                            <text x="470" y="166" text-anchor="middle" font-family="Arial" font-size="11" fill="white" font-weight="bold">Zeitschrift</text>
+                            <line x1="400" y1="172" x2="540" y2="172" stroke="#333" stroke-width="1"/>
+                            <text x="408" y="188" font-family="Courier New" font-size="9">- ausgabe: int</text>
+                            <text x="408" y="200" font-family="Courier New" font-size="9">- erscheinungsdatum: Date</text>
+                            <line x1="400" y1="218" x2="540" y2="218" stroke="#333" stroke-width="1"/>
+                            
+                            <!-- Vererbungspfeile -->
+                            <line x1="130" y1="150" x2="130" y2="120" stroke="#333" stroke-width="2"/>
+                            <line x1="130" y1="120" x2="300" y2="120" stroke="#333" stroke-width="2"/>
+                            <line x1="300" y1="120" x2="300" y2="90" stroke="#333" stroke-width="2"/>
+                            <polygon points="300,90 290,105 310,105" fill="white" stroke="#333" stroke-width="2"/>
+                            
+                            <line x1="300" y1="150" x2="300" y2="120" stroke="#333" stroke-width="2"/>
+                            
+                            <line x1="470" y1="150" x2="470" y2="120" stroke="#333" stroke-width="2"/>
+                            <line x1="470" y1="120" x2="300" y2="120" stroke="#333" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    
+                    <p><strong>Ordnen Sie die Begriffe den Nummern zu:</strong></p>
+                    <div class="zuordnung-container">
+                        <div class="zuordnung-links">
+                            <h4>Begriffe</h4>
+                            <div class="zuordnung-item"><span class="nummer">1</span> Oberklasse/Basisklasse</div>
+                            <div class="zuordnung-item"><span class="nummer">2</span> Unterklasse/Subklasse</div>
+                            <div class="zuordnung-item"><span class="nummer">3</span> Vererbung/Generalisierung</div>
+                            <div class="zuordnung-item"><span class="nummer">4</span> Attribut</div>
+                        </div>
+                        <div class="zuordnung-rechts">
+                            <h4>Diagrammelement</h4>
+                            <div class="zuordnung-item">Medium <input type="text" class="zuordnung-input"></div>
+                            <div class="zuordnung-item">Buch, DVD, Zeitschrift <input type="text" class="zuordnung-input"></div>
+                            <div class="zuordnung-item">Pfeil mit Dreieck <input type="text" class="zuordnung-input"></div>
+                            <div class="zuordnung-item">- titel: String <input type="text" class="zuordnung-input"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="teilaufgabe">
+                    <div class="teilaufgabe-header">b) Beziehungen ergänzen (8 Punkte)</div>
+                    <p>Ergänzen Sie das Klassendiagramm um folgende Beziehungen:</p>
+                    <ul style="margin: 10px 0 15px 20px; line-height: 1.8;">
+                        <li>Eine Klasse <strong>Kunde</strong> mit: kundennr, name, email</li>
+                        <li>Eine Klasse <strong>Ausleihe</strong> mit: ausleihDatum, rueckgabeDatum</li>
+                        <li><strong>Beziehungen:</strong>
+                            <ul style="margin-top: 5px;">
+                                <li>Ein Kunde kann mehrere Ausleihen haben (1 zu *)</li>
+                                <li>Eine Ausleihe bezieht sich auf genau ein Medium (gerichtete Assoziation)</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    
+                    <div class="antwort-bereich">
+                        <h4>📝 Ihre Lösung (nur die neuen Klassen und Beziehungen):</h4>
+                        <div style="height: 180px; border: 1px dashed #ccc; margin-top: 15px; background: white;"></div>
+                    </div>
+                </div>
+                
+                <div class="loesung">
+                    <button class="loesung-btn" onclick="toggleLoesung('loesung2')">✅ Musterlösung anzeigen</button>
+                    <div class="loesung-content" id="loesung2">
+                        <h4>Musterlösung – Handlungsschritt 2</h4>
+                        
+                        <p><strong>a) Zuordnung:</strong></p>
+                        <ul style="margin: 10px 0 20px 20px;">
+                            <li>Medium: <strong>1</strong> (Oberklasse)</li>
+                            <li>Buch, DVD, Zeitschrift: <strong>2</strong> (Unterklassen)</li>
+                            <li>Pfeil mit Dreieck: <strong>3</strong> (Vererbung)</li>
+                            <li>- titel: String: <strong>4</strong> (Attribut)</li>
+                        </ul>
+                        
+                        <p><strong>b) Ergänzung:</strong></p>
+                        <div class="svg-container">
+                            <svg width="500" height="180" viewBox="0 0 500 180">
+                                <defs>
+                                    <marker id="navArrowKlasse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                                        <path d="M1,1 L9,5 L1,9" fill="none" stroke="#333" stroke-width="1.5"/>
+                                    </marker>
+                                </defs>
+                                
+                                <!-- Kunde -->
+                                <rect x="20" y="30" width="130" height="80" fill="white" stroke="#333" stroke-width="2"/>
+                                <rect x="20" y="30" width="130" height="22" fill="#17a2b8"/>
+                                <text x="85" y="46" text-anchor="middle" font-family="Arial" font-size="11" fill="white" font-weight="bold">Kunde</text>
+                                <line x1="20" y1="52" x2="150" y2="52" stroke="#333" stroke-width="1"/>
+                                <text x="28" y="68" font-family="Courier New" font-size="9">- kundennr: String</text>
+                                <text x="28" y="80" font-family="Courier New" font-size="9">- name: String</text>
+                                <text x="28" y="92" font-family="Courier New" font-size="9">- email: String</text>
+                                <line x1="20" y1="98" x2="150" y2="98" stroke="#333" stroke-width="1"/>
+                                
+                                <!-- Ausleihe -->
+                                <rect x="200" y="30" width="130" height="80" fill="white" stroke="#333" stroke-width="2"/>
+                                <rect x="200" y="30" width="130" height="22" fill="#17a2b8"/>
+                                <text x="265" y="46" text-anchor="middle" font-family="Arial" font-size="11" fill="white" font-weight="bold">Ausleihe</text>
+                                <line x1="200" y1="52" x2="330" y2="52" stroke="#333" stroke-width="1"/>
+                                <text x="208" y="68" font-family="Courier New" font-size="9">- ausleihDatum: Date</text>
+                                <text x="208" y="80" font-family="Courier New" font-size="9">- rueckgabeDatum: Date</text>
+                                <line x1="200" y1="98" x2="330" y2="98" stroke="#333" stroke-width="1"/>
+                                
+                                <!-- Medium (Referenz) -->
+                                <rect x="380" y="45" width="100" height="50" fill="#f0f0f0" stroke="#333" stroke-width="2" stroke-dasharray="5,3"/>
+                                <text x="430" y="75" text-anchor="middle" font-family="Arial" font-size="11" fill="#666">Medium</text>
+                                
+                                <!-- Beziehung Kunde - Ausleihe -->
+                                <line x1="150" y1="70" x2="200" y2="70" stroke="#333" stroke-width="2"/>
+                                <text x="158" y="62" font-family="Arial" font-size="10">1</text>
+                                <text x="188" y="62" font-family="Arial" font-size="10">*</text>
+                                
+                                <!-- Gerichtete Assoziation Ausleihe -> Medium -->
+                                <line x1="330" y1="70" x2="380" y2="70" stroke="#333" stroke-width="2" marker-end="url(#navArrowKlasse)"/>
+                                <text x="338" y="62" font-family="Arial" font-size="10">*</text>
+                                <text x="368" y="62" font-family="Arial" font-size="10">1</text>
+                            </svg>
+                        </div>
+                        
+                        <div class="bewertung">
+                            <h5>Bewertung:</h5>
+                            <ul>
+                                <li>a) Je richtige Zuordnung 1,5 Punkte (6P)</li>
+                                <li>b) Klasse Kunde korrekt (2P)</li>
+                                <li>b) Klasse Ausleihe korrekt (2P)</li>
+                                <li>b) Beziehung 1:* (2P)</li>
+                                <li>b) Gerichtete Assoziation mit Pfeil (2P)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HANDLUNGSSCHRITT 3: Aktivitätsdiagramm -->
+        <div class="handlungsschritt">
+            <div class="handlungsschritt-header">
+                <h3>Handlungsschritt 3 – Aktivitätsdiagramm</h3>
+                <span class="punkte">12 Punkte</span>
+            </div>
+            <div class="handlungsschritt-body">
+                <div class="aufgabe-text">
+                    <p>Der Ausleihvorgang soll als Aktivitätsdiagramm modelliert werden.</p>
+                </div>
+                
+                <div class="teilaufgabe">
+                    <div class="teilaufgabe-header">a) Aktivitätsdiagramm erstellen (8 Punkte)</div>
+                    <p>Erstellen Sie ein Aktivitätsdiagramm für den Ausleihvorgang:</p>
+                    <ol style="margin: 10px 0 15px 20px; line-height: 1.8;">
+                        <li>Start → Kundenkarte einlesen</li>
+                        <li>Entscheidung: Konto gültig?
+                            <ul>
+                                <li>[nein] → Fehlermeldung → Ende</li>
+                                <li>[ja] → weiter</li>
+                            </ul>
+                        </li>
+                        <li>Medium scannen</li>
+                        <li>Entscheidung: Medium verfügbar?
+                            <ul>
+                                <li>[nein] → Vormerkung anbieten → Ende</li>
+                                <li>[ja] → Ausleihe buchen → Quittung drucken → Ende</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    
+                    <div class="antwort-bereich">
+                        <h4>📝 Ihre Lösung:</h4>
+                        <div style="height: 320px; border: 1px dashed #ccc; margin-top: 15px; background: white;"></div>
+                    </div>
+                </div>
+                
+                <div class="teilaufgabe">
+                    <div class="teilaufgabe-header">b) Notation (4 Punkte)</div>
+                    <div class="mc-container">
+                        <p class="mc-frage">Welches Symbol wird für eine Entscheidung (Decision) im Aktivitätsdiagramm verwendet?</p>
+                        <div class="mc-option" onclick="selectMC(this, 'mc3')">
+                            <input type="radio" name="mc3" id="mc3a">
+                            <label for="mc3a"><strong>A)</strong> Rechteck mit abgerundeten Ecken</label>
+                        </div>
+                        <div class="mc-option" onclick="selectMC(this, 'mc3')">
+                            <input type="radio" name="mc3" id="mc3b">
+                            <label for="mc3b"><strong>B)</strong> Raute (Rhombus)</label>
+                        </div>
+                        <div class="mc-option" onclick="selectMC(this, 'mc3')">
+                            <input type="radio" name="mc3" id="mc3c">
+                            <label for="mc3c"><strong>C)</strong> Schwarzer horizontaler Balken</label>
+                        </div>
+                        <div class="mc-option" onclick="selectMC(this, 'mc3')">
+                            <input type="radio" name="mc3" id="mc3d">
+                            <label for="mc3d"><strong>D)</strong> Ellipse</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="loesung">
+                    <button class="loesung-btn" onclick="toggleLoesung('loesung3')">✅ Musterlösung anzeigen</button>
+                    <div class="loesung-content" id="loesung3">
+                        <h4>Musterlösung – Handlungsschritt 3</h4>
+                        
+                        <p><strong>a) Aktivitätsdiagramm:</strong></p>
+                        <div class="svg-container">
+                            <svg width="250" height="600" viewBox="0 0 250 600">
+                                <defs>
+                                    <marker id="actArrow3" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                                        <path d="M1,1 L9,5 L1,9" fill="none" stroke="#333" stroke-width="1.5"/>
+                                    </marker>
+                                </defs>
+                                
+                                <!-- Start -->
+                                <circle cx="225" cy="20" r="10" fill="#333"/>
+                                <line x1="225" y1="30" x2="225" y2="50" stroke="#333" stroke-width="2" marker-end="url(#actArrow3)"/>
+                                
+                                <!-- Kundenkarte einlesen -->
+                                <rect x="125" y="55" width="200" height="35" rx="17" fill="#d1ecf1" stroke="#333" stroke-width="2"/>
+                                <text x="225" y="78" text-anchor="middle" font-family="Arial" font-size="11">Kundenkarte einlesen</text>
+                                <line x1="225" y1="90" x2="225" y2="115" stroke="#333" stroke-width="2" marker-end="url(#actArrow3)"/>
+                                
+                                <!-- Entscheidung 1: Konto gültig -->
+                                <polygon points="225,120 275,150 225,180 175,150" fill="white" stroke="#333" stroke-width="2"/>
+                                <text x="225" y="155" text-anchor="middle" font-family="Arial" font-size="10">Konto</text>
+                                <text x="225" y="167" text-anchor="middle" font-family="Arial" font-size="10">gültig?</text>
+                                
+                                <!-- [nein] -> Fehlermeldung -->
+                                <line x1="175" y1="150" x2="70" y2="150" stroke="#333" stroke-width="2"/>
+                                <text x="120" y="142" font-family="Arial" font-size="10">[nein]</text>
+                                <line x1="70" y1="150" x2="70" y2="200" stroke="#333" stroke-width="2" marker-end="url(#actArrow3)"/>
+                                <rect x="20" y="205" width="100" height="35" rx="17" fill="#f8d7da" stroke="#333" stroke-width="2"/>
+                                <text x="70" y="228" text-anchor="middle" font-family="Arial" font-size="10">Fehlermeldung</text>
+                                <line x1="70" y1="240" x2="70" y2="270" stroke="#333" stroke-width="2"/>
+                                
+                                <!-- [ja] -> Medium scannen -->
+                                <line x1="225" y1="180" x2="225" y2="205" stroke="#333" stroke-width="2" marker-end="url(#actArrow3)"/>
+                                <text x="240" y="195" font-family="Arial" font-size="10">[ja]</text>
+                                
+                                <rect x="125" y="210" width="200" height="35" rx="17" fill="#d1ecf1" stroke="#333" stroke-width="2"/>
+                                <text x="225" y="233" text-anchor="middle" font-family="Arial" font-size="11">Medium scannen</text>
+                                <line x1="225" y1="245" x2="225" y2="270" stroke="#333" stroke-width="2"/>
+                                
+                                <!-- MERGE 1: für Decision 1 (Fehlermeldung + [ja]-Pfad) -->
+                                <polygon points="150,275 130,290 150,305 170,290" fill="white" stroke="#333" stroke-width="2"/>
+                                <line x1="70" y1="270" x2="70" y2="290" stroke="#333" stroke-width="2"/>
+                                <line x1="70" y1="290" x2="130" y2="290" stroke="#333" stroke-width="2"/>
+                                <line x1="225" y1="270" x2="225" y2="290" stroke="#333" stroke-width="2"/>
+                                <line x1="225" y1="290" x2="170" y2="290" stroke="#333" stroke-width="2"/>
+                                <line x1="150" y1="305" x2="150" y2="325" stroke="#333" stroke-width="2" marker-end="url(#actArrow3)"/>
+                                
+                                <!-- Entscheidung 2: Medium verfügbar -->
+                                <polygon points="150,330 200,360 150,390 100,360" fill="white" stroke="#333" stroke-width="2"/>
+                                <text x="150" y="355" text-anchor="middle" font-family="Arial" font-size="9">Medium</text>
+                                <text x="150" y="367" text-anchor="middle" font-family="Arial" font-size="9">verfügbar?</text>
+                                
+                                <!-- [nein] -> Vormerkung -->
+                                <line x1="100" y1="360" x2="50" y2="360" stroke="#333" stroke-width="2"/>
+                                <text x="75" y="352" font-family="Arial" font-size="10">[nein]</text>
+                                <line x1="50" y1="360" x2="50" y2="410" stroke="#333" stroke-width="2" marker-end="url(#actArrow3)"/>
+                                <rect x="0" y="415" width="100" height="35" rx="17" fill="#fff3e0" stroke="#333" stroke-width="2"/>
+                                <text x="50" y="433" text-anchor="middle" font-family="Arial" font-size="9">Vormerkung</text>
+                                <text x="50" y="445" text-anchor="middle" font-family="Arial" font-size="9">anbieten</text>
+                                <line x1="50" y1="450" x2="50" y2="480" stroke="#333" stroke-width="2"/>
+                                
+                                <!-- [ja] -> Ausleihe buchen -> Quittung -->
+                                <line x1="150" y1="390" x2="150" y2="410" stroke="#333" stroke-width="2" marker-end="url(#actArrow3)"/>
+                                <text x="165" y="402" font-family="Arial" font-size="10">[ja]</text>
+                                
+                                <rect x="100" y="415" width="100" height="30" rx="15" fill="#c8e6c9" stroke="#333" stroke-width="2"/>
+                                <text x="150" y="435" text-anchor="middle" font-family="Arial" font-size="10">Ausleihe buchen</text>
+                                <line x1="150" y1="445" x2="150" y2="455" stroke="#333" stroke-width="2" marker-end="url(#actArrow3)"/>
+                                
+                                <rect x="100" y="460" width="100" height="30" rx="15" fill="#c8e6c9" stroke="#333" stroke-width="2"/>
+                                <text x="150" y="480" text-anchor="middle" font-family="Arial" font-size="10">Quittung drucken</text>
+                                <line x1="150" y1="490" x2="150" y2="510" stroke="#333" stroke-width="2"/>
+                                
+                                <!-- MERGE 2: für Decision 2 (Vormerkung + Ausleihe/Quittung) -->
+                                <polygon points="100,515 80,530 100,545 120,530" fill="white" stroke="#333" stroke-width="2"/>
+                                <line x1="50" y1="480" x2="50" y2="530" stroke="#333" stroke-width="2"/>
+                                <line x1="50" y1="530" x2="80" y2="530" stroke="#333" stroke-width="2"/>
+                                <line x1="150" y1="510" x2="150" y2="530" stroke="#333" stroke-width="2"/>
+                                <line x1="150" y1="530" x2="120" y2="530" stroke="#333" stroke-width="2"/>
+                                
+                                <!-- Ende -->
+                                <line x1="100" y1="545" x2="100" y2="565" stroke="#333" stroke-width="2"/>
+                                <circle cx="100" cy="575" r="10" fill="white" stroke="#333" stroke-width="2"/>
+                                <circle cx="100" cy="575" r="5" fill="#333"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="hinweis">
+                            <strong>UML 2.5.1 Hinweis:</strong> <strong>2 Entscheidungen → 2 Merge-Rauten!</strong> 
+                            Jede Entscheidung braucht ihre eigene Merge-Raute zur Zusammenführung der alternativen Pfade.
+                        </div>
+                        
+                        <p><strong>b) Notation:</strong> <strong>B)</strong> Raute (Rhombus)</p>
+                        
+                        <div class="bewertung">
+                            <h5>Bewertung:</h5>
+                            <ul>
+                                <li>Start/Endknoten (1P)</li>
+                                <li>Aktivitäten als abgerundete Rechtecke (2P)</li>
+                                <li>2 Entscheidungsrauten + 2 Merge-Rauten (4P)</li>
+                                <li>Guards [ja]/[nein] (2P)</li>
+                                <li>Kontrollflüsse korrekt (1P)</li>
+                                <li>MC korrekt (4P)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HANDLUNGSSCHRITT 4: Sequenzdiagramm -->
+        <div class="handlungsschritt">
+            <div class="handlungsschritt-header">
+                <h3>Handlungsschritt 4 – Sequenzdiagramm</h3>
+                <span class="punkte">10 Punkte</span>
+            </div>
+            <div class="handlungsschritt-body">
+                <div class="aufgabe-text">
+                    <p>Der Ablauf einer Medienausleihe soll als Sequenzdiagramm dargestellt werden.</p>
+                </div>
+                
+                <div class="teilaufgabe">
+                    <div class="teilaufgabe-header">a) Sequenzdiagramm analysieren (6 Punkte)</div>
+                    <p>Betrachten Sie das folgende Sequenzdiagramm:</p>
+                    
+                    <div class="svg-container">
+                        <svg width="500" height="280" viewBox="0 0 500 280">
+                            <defs>
+                                <marker id="seqArrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                                    <path d="M1,1 L9,5 L1,9 Z" fill="#333"/>
+                                </marker>
+                                <marker id="seqReturn" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                                    <path d="M1,1 L9,5 L1,9" fill="none" stroke="#333" stroke-width="1.5"/>
+                                </marker>
+                            </defs>
+                            
+                            <!-- Objekte -->
+                            <rect x="30" y="20" width="80" height="35" fill="#d1ecf1" stroke="#333" stroke-width="2"/>
+                            <text x="70" y="43" text-anchor="middle" font-family="Arial" font-size="11">:Terminal</text>
+                            
+                            <rect x="170" y="20" width="100" height="35" fill="#d1ecf1" stroke="#333" stroke-width="2"/>
+                            <text x="220" y="43" text-anchor="middle" font-family="Arial" font-size="11">:AusleihService</text>
+                            
+                            <rect x="330" y="20" width="100" height="35" fill="#d1ecf1" stroke="#333" stroke-width="2"/>
+                            <text x="380" y="43" text-anchor="middle" font-family="Arial" font-size="11">:Medienkatalog</text>
+                            
+                            <!-- Lebenslinien -->
+                            <line x1="70" y1="55" x2="70" y2="260" stroke="#333" stroke-width="1" stroke-dasharray="5,5"/>
+                            <line x1="220" y1="55" x2="220" y2="260" stroke="#333" stroke-width="1" stroke-dasharray="5,5"/>
+                            <line x1="380" y1="55" x2="380" y2="260" stroke="#333" stroke-width="1" stroke-dasharray="5,5"/>
+                            
+                            <!-- Aktivierungsbalken -->
+                            <rect x="65" y="75" width="10" height="30" fill="white" stroke="#333" stroke-width="1"/>
+                            <rect x="215" y="85" width="10" height="100" fill="white" stroke="#333" stroke-width="1"/>
+                            <rect x="375" y="115" width="10" height="40" fill="white" stroke="#333" stroke-width="1"/>
+                            
+                            <!-- Nachrichten -->
+                            <line x1="75" y1="85" x2="215" y2="85" stroke="#333" stroke-width="2" marker-end="url(#seqArrow)"/>
+                            <text x="145" y="78" text-anchor="middle" font-family="Arial" font-size="10">ausleihen(kundeId, mediumId)</text>
+                            
+                            <line x1="225" y1="120" x2="375" y2="120" stroke="#333" stroke-width="2" marker-end="url(#seqArrow)"/>
+                            <text x="300" y="113" text-anchor="middle" font-family="Arial" font-size="10">pruefeVerfuegbarkeit(mediumId)</text>
+                            
+                            <line x1="375" y1="150" x2="225" y2="150" stroke="#333" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#seqReturn)"/>
+                            <text x="300" y="165" text-anchor="middle" font-family="Arial" font-size="10">verfuegbar: boolean</text>
+                            
+                            <line x1="215" y1="180" x2="75" y2="180" stroke="#333" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#seqReturn)"/>
+                            <text x="145" y="195" text-anchor="middle" font-family="Arial" font-size="10">erfolg: boolean</text>
+                        </svg>
+                    </div>
+                    
+                    <div class="mc-container">
+                        <p class="mc-frage">Welche Aussage zum Diagramm ist korrekt?</p>
+                        <div class="mc-option" onclick="selectMC(this, 'mc4')">
+                            <input type="radio" name="mc4" id="mc4a">
+                            <label for="mc4a"><strong>A)</strong> Die gestrichelten Pfeile zeigen asynchrone Nachrichten</label>
+                        </div>
+                        <div class="mc-option" onclick="selectMC(this, 'mc4')">
+                            <input type="radio" name="mc4" id="mc4b">
+                            <label for="mc4b"><strong>B)</strong> Die gestrichelten Pfeile zeigen Rückgabewerte (Return)</label>
+                        </div>
+                        <div class="mc-option" onclick="selectMC(this, 'mc4')">
+                            <input type="radio" name="mc4" id="mc4c">
+                            <label for="mc4c"><strong>C)</strong> Der AusleihService ruft zuerst den Medienkatalog auf, dann das Terminal</label>
+                        </div>
+                        <div class="mc-option" onclick="selectMC(this, 'mc4')">
+                            <input type="radio" name="mc4" id="mc4d">
+                            <label for="mc4d"><strong>D)</strong> Die Aktivierungsbalken zeigen die Lebensdauer der Objekte</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="teilaufgabe">
+                    <div class="teilaufgabe-header">b) Notation ergänzen (4 Punkte)</div>
+                    <p>Nennen Sie den Unterschied zwischen einer <strong>synchronen</strong> und einer <strong>asynchronen</strong> Nachricht im Sequenzdiagramm:</p>
+                    <div class="antwort-bereich" style="min-height: 100px;">
+                        <textarea style="width:100%; height:80px; border:1px solid #ddd; padding:10px;" placeholder="Synchrone Nachricht: ...\n\nAsynchrone Nachricht: ..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="loesung">
+                    <button class="loesung-btn" onclick="toggleLoesung('loesung4')">✅ Musterlösung anzeigen</button>
+                    <div class="loesung-content" id="loesung4">
+                        <h4>Musterlösung – Handlungsschritt 4</h4>
+                        
+                        <p><strong>a) Analyse:</strong> <strong>B)</strong> Die gestrichelten Pfeile zeigen Rückgabewerte (Return)</p>
+                        
+                        <p style="margin-top: 15px;"><strong>b) Unterschied synchron/asynchron:</strong></p>
+                        <ul style="margin: 10px 0 15px 20px;">
+                            <li><strong>Synchrone Nachricht:</strong> Gefüllte Pfeilspitze (▶), der Sender wartet auf die Antwort, bevor er fortfährt.</li>
+                            <li><strong>Asynchrone Nachricht:</strong> Offene Pfeilspitze (>), der Sender wartet NICHT und arbeitet sofort weiter.</li>
+                        </ul>
+                        
+                        <div class="bewertung">
+                            <h5>Bewertung:</h5>
+                            <ul>
+                                <li>a) MC korrekt (6P)</li>
+                                <li>b) Synchron erklärt (2P)</li>
+                                <li>b) Asynchron erklärt (2P)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Druckhinweis -->
+        <div class="hinweis" style="margin-top: 30px;">
+            <strong>🖨️ Tipp:</strong> Sie können diese Seite drucken (Strg+P) um die Aufgaben auf Papier zu bearbeiten. 
+            Die Lösungen werden beim Drucken automatisch eingeblendet.
+        </div>
+        
+    </div>
+    
+    <footer>🎓 UML Lernplattform für Fachinformatiker</footer>
+</div>
+
+<script>
+// Timer (45 Minuten für UML-Teil)
+let timerInterval = null;
+let timeRemaining = 45 * 60;
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(timeRemaining / 60);
+    const seconds = timeRemaining % 60;
+    const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    const timerElement = document.getElementById('timer');
+    timerElement.textContent = display;
+    
+    timerElement.classList.remove('warning', 'danger');
+    if (timeRemaining <= 300) timerElement.classList.add('danger');
+    else if (timeRemaining <= 600) timerElement.classList.add('warning');
+}
+
+function startTimer() {
+    if (timerInterval) return;
+    timerInterval = setInterval(() => {
+        if (timeRemaining > 0) {
+            timeRemaining--;
+            updateTimerDisplay();
+        } else {
+            clearInterval(timerInterval);
+            alert('⏰ Die Prüfungszeit ist abgelaufen!');
+        }
+    }, 1000);
+}
+
+function pauseTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+}
+
+function resetTimer() {
+    pauseTimer();
+    timeRemaining = 45 * 60;
+    updateTimerDisplay();
+}
+
+// Multiple Choice
+function selectMC(element, groupName) {
+    document.querySelectorAll(`[onclick*="${groupName}"]`).forEach(opt => opt.classList.remove('selected'));
+    element.classList.add('selected');
+    element.querySelector('input').checked = true;
+}
+
+// Lösung anzeigen
+function toggleLoesung(id) {
+    const element = document.getElementById(id);
+    element.classList.toggle('show');
+    
+    const btn = element.previousElementSibling;
+    if (element.classList.contains('show')) {
+        btn.textContent = '🔽 Musterlösung ausblenden';
+    } else {
+        btn.textContent = '✅ Musterlösung anzeigen';
+    }
+}
+
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('uml_dark_mode', isDark);
+    document.querySelector('.dark-toggle').textContent = isDark ? '☀️' : '🌙';
+}
+
+updateTimerDisplay();
+if (localStorage.getItem('uml_dark_mode') === 'true') {
+    document.body.classList.add('dark-mode');
+}
+</script>
+<button class="dark-toggle" onclick="toggleDarkMode()" title="Dark Mode">🌙</button>
+<script>if(localStorage.getItem('uml_dark_mode')==='true')document.querySelector('.dark-toggle').textContent='☀️';</script>
+</body>
+</html>

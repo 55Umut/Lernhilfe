@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UML 2.5.1 Quiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+        header { background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%); color: white; padding: 30px; text-align: center; }
+        header h1 { font-size: 2.2em; margin-bottom: 8px; }
+        nav { display: flex; background: #f8f9fa; border-bottom: 3px solid #0EA5E9; justify-content: center; gap: 10px; padding: 10px; flex-wrap: wrap; }
+        nav a { padding: 18px 35px; text-decoration: none; font-size: 1.05em; font-weight: 600; color: #666; border-radius: 10px; }
+        nav a:hover { background: rgba(102, 126, 234, 0.1); color: #0EA5E9; }
+        nav a.active { background: #0EA5E9; color: white; }
+        .content { padding: 30px; }
+        .progress-bar { background: #e9ecef; border-radius: 10px; height: 12px; margin-bottom: 25px; overflow: hidden; }
+        .progress-fill { background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%); height: 100%; transition: width 0.3s; }
+        .progress-text { text-align: center; color: #666; margin-bottom: 15px; font-weight: 600; }
+        .question-card { background: #f8f9fa; border-radius: 15px; padding: 25px; margin-bottom: 20px; border-left: 5px solid #0EA5E9; }
+        .question-card.answered-correct { border-left-color: #28a745; background: #e8f5e9; }
+        .question-card.answered-wrong { border-left-color: #dc3545; background: #ffebee; }
+        .question-number { background: #0EA5E9; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.9em; margin-bottom: 15px; display: inline-block; }
+        .question-text { font-size: 1.15em; color: #333; margin-bottom: 20px; line-height: 1.5; }
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .option { background: white; border: 2px solid #ddd; border-radius: 10px; padding: 15px 20px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; }
+        .option:hover { border-color: #0EA5E9; background: #f0f4ff; }
+        .option.selected { border-color: #0EA5E9; background: #e3f2fd; }
+        .option.correct { border-color: #28a745; background: #d4edda; }
+        .option.wrong { border-color: #dc3545; background: #f8d7da; }
+        .option.disabled { pointer-events: none; opacity: 0.8; }
+        .option-letter { background: #0EA5E9; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+        .option.correct .option-letter { background: #28a745; }
+        .option.wrong .option-letter { background: #dc3545; }
+        .explanation { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 8px; margin-top: 15px; display: none; }
+        .explanation.show { display: block; }
+        .explanation strong { color: #856404; }
+        .btn { background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%); color: white; border: none; padding: 15px 35px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1.05em; transition: all 0.3s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102,126,234,0.4); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn-container { text-align: center; margin-top: 25px; }
+        .result-card { background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%); color: white; border-radius: 15px; padding: 30px; text-align: center; margin-bottom: 25px; display: none; }
+        .result-card.show { display: block; }
+        .result-score { font-size: 3em; font-weight: bold; margin: 15px 0; }
+        .result-text { font-size: 1.2em; opacity: 0.9; }
+        .result-emoji { font-size: 4em; margin-bottom: 15px; }
+        footer { background: #f8f9fa; padding: 15px; text-align: center; color: #666; }
+        @media (max-width: 600px) { .question-text { font-size: 1em; } .option { padding: 12px 15px; } }
+        /* Dark Mode */
+        .dark-toggle { position: fixed; bottom: 20px; right: 20px; background: #333; color: white; border: none; padding: 12px 16px; border-radius: 50px; cursor: pointer; font-size: 1.2em; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .dark-toggle:hover { background: #555; }
+        body.dark-mode { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); }
+        body.dark-mode .container { background: #1e293b; color: #e2e8f0; }
+        body.dark-mode header { background: linear-gradient(135deg, #0369a1 0%, #0c4a6e 100%); }
+        body.dark-mode header p { color: rgba(255,255,255,0.9); }
+        body.dark-mode nav { background: #334155; border-color: #0EA5E9; }
+        body.dark-mode nav a { color: #94a3b8; }
+        body.dark-mode nav a:hover { background: rgba(14,165,233,0.2); color: #0EA5E9; }
+        body.dark-mode .question-card { background: #334155; }
+        body.dark-mode .question-text { color: #e2e8f0; }
+        body.dark-mode .option { background: #1e293b; border-color: #475569; color: #e2e8f0; }
+        body.dark-mode .option:hover { background: #334155; border-color: #0EA5E9; }
+        body.dark-mode .option.selected { background: #0c4a6e; }
+        body.dark-mode .explanation { background: #422006; border-color: #f59e0b; }
+        body.dark-mode .explanation strong { color: #fcd34d; }
+        body.dark-mode .progress-bar { background: #334155; }
+        body.dark-mode .progress-text { color: #94a3b8; }
+        body.dark-mode footer { background: #334155; color: #94a3b8; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🎯 UML Quiz</h1>
+        <p id="questionCountHeader">Fragen zu UML 2.5.1</p>
+    </header>
+    <nav>
+        <a href="index.html">🏠 Übersicht</a>
+        <a href="aufgaben.html">📝 Aufgaben</a>
+        <a href="cheatsheet.html">📋 Cheatsheet</a>
+        <a href="quiz.html">🎯 Quiz</a>
+        <a href="ihk-training.html">📋 AP2-Training</a>
+        <a href="ap1-training.html">📋 AP1-Training</a>
+    </nav>
+    <div class="content">
+        <div class="progress-text">Frage <span id="currentQ">1</span> von <span id="totalQ">25</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width: 4%"></div></div>
+        
+        <div class="result-card" id="resultCard">
+            <div class="result-emoji" id="resultEmoji">🎉</div>
+            <div class="result-text">Dein Ergebnis:</div>
+            <div class="result-score" id="resultScore">0/0</div>
+            <div class="result-text" id="resultText">Weiter üben!</div>
+            <button class="btn" onclick="restartQuiz()" style="margin-top:20px;">🔄 Quiz wiederholen</button>
+        </div>
+        
+        <div id="quizContainer"></div>
+        
+        <div class="btn-container">
+            <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Nächste Frage →</button>
+        </div>
+    </div>
+    <footer>🎓 UML Lernplattform für Fachinformatiker</footer>
+</div>
+
+<script>
+// Fragen-Pool mit korrekter Antwort als Text (wird später randomisiert)
+const questionPool = [
+    // USE-CASE DIAGRAMM (8 Fragen)
+    {
+        question: "Wie wird eine «include»-Beziehung im Use-Case-Diagramm dargestellt?",
+        correct: "Gestrichelte Linie mit offener Pfeilspitze zum eingebundenen UC",
+        wrong: ["Durchgezogene Linie mit gefüllter Pfeilspitze", "Gestrichelte Linie mit offener Pfeilspitze zum Basis-UC", "Durchgezogene Linie ohne Pfeilspitze"],
+        explanation: "«include» wird mit einer gestrichelten Linie und offener Pfeilspitze dargestellt. Der Pfeil zeigt ZUM eingebundenen Use Case."
+    },
+    {
+        question: "In welche Richtung zeigt der Pfeil bei einer «extend»-Beziehung?",
+        correct: "Vom erweiternden UC zum Basis-UC",
+        wrong: ["Vom Basis-UC zum erweiternden UC", "In beide Richtungen", "Es gibt keinen Pfeil bei extend"],
+        explanation: "Bei «extend» zeigt der Pfeil vom erweiternden UC ZUM Basis-UC. Die Erweiterung 'dockt' am Basis-UC an."
+    },
+    {
+        question: "Was ist der Unterschied zwischen «include» und «extend»?",
+        correct: "Include ist verpflichtend, Extend ist optional/bedingt",
+        wrong: ["Include ist optional, Extend ist verpflichtend", "Beide sind optional", "Beide sind verpflichtend"],
+        explanation: "«include» = IMMER eingebunden (verpflichtend). «extend» = Kann unter bestimmten Bedingungen eintreten (optional/bedingt)."
+    },
+    {
+        question: "Wo wird der Primärakteur im Use-Case-Diagramm positioniert?",
+        correct: "Links von der Systemgrenze",
+        wrong: ["Rechts von der Systemgrenze", "Innerhalb der Systemgrenze", "Oberhalb der Systemgrenze"],
+        explanation: "Primärakteure (die das System nutzen) stehen LINKS, Sekundärakteure (die vom System genutzt werden) stehen RECHTS."
+    },
+    {
+        question: "Was kennzeichnet einen Sekundärakteur?",
+        correct: "Er wird vom System aufgerufen/genutzt",
+        wrong: ["Er initiiert die Interaktion mit dem System", "Er ist immer eine Person", "Er steht immer links"],
+        explanation: "Sekundärakteure (z.B. Datenbank, Zahlungsdienst) werden vom System aufgerufen und stehen rechts von der Systemgrenze."
+    },
+    {
+        question: "Ist eine Condition bei «extend» zwingend erforderlich?",
+        correct: "Nein, sie ist optional (aber empfohlen)",
+        wrong: ["Ja, immer erforderlich", "Nur bei mehr als 2 Use Cases", "Nur bei Generalisierung"],
+        explanation: "Laut UML 2.5.1 sind Condition und Extension Point bei «extend» OPTIONAL, machen die Erweiterung aber expliziter."
+    },
+    {
+        question: "Wie wird die Generalisierung zwischen Akteuren dargestellt?",
+        correct: "Durchgezogene Linie mit leerem Dreieck zum allgemeinen Akteur",
+        wrong: ["Gestrichelte Linie mit Pfeil", "Linie mit gefüllter Raute", "Doppelte Linie ohne Pfeil"],
+        explanation: "Generalisierung wird mit einem LEEREN Dreieck (△) dargestellt, das zum allgemeinen/abstrakten Akteur zeigt."
+    },
+    {
+        question: "Wo werden Use Cases im Diagramm platziert?",
+        correct: "Innerhalb der Systemgrenze",
+        wrong: ["Außerhalb der Systemgrenze", "Links neben den Akteuren", "Über der Systemgrenze"],
+        explanation: "Use Cases repräsentieren Systemfunktionen und werden INNERHALB der Systemgrenze (Rechteck) platziert."
+    },
+    
+    // KLASSENDIAGRAMM (8 Fragen)
+    {
+        question: "Was bedeutet eine LEERE Raute (◇) im Klassendiagramm?",
+        correct: "Aggregation - Teil kann unabhängig existieren",
+        wrong: ["Komposition - Teil stirbt mit dem Ganzen", "Vererbung", "Einfache Assoziation"],
+        explanation: "Die LEERE Raute (◇) steht für Aggregation. Beispiel: Ein Mitglied kann ohne sein Team existieren."
+    },
+    {
+        question: "Was bedeutet eine GEFÜLLTE Raute (◆) im Klassendiagramm?",
+        correct: "Komposition - Teil stirbt mit dem Ganzen",
+        wrong: ["Aggregation - Teil kann unabhängig existieren", "Generalisierung", "Abhängigkeit"],
+        explanation: "Die GEFÜLLTE Raute (◆) steht für Komposition. Beispiel: Eine Bestellposition existiert NICHT ohne ihre Bestellung."
+    },
+    {
+        question: "Wo wird die Raute (Aggregation/Komposition) platziert?",
+        correct: "Am 'Ganzen' (Container)",
+        wrong: ["In der Mitte der Verbindungslinie", "Am 'Teil'", "An beiden Enden"],
+        explanation: "Die Raute wird IMMER am 'Ganzen' angebracht (z.B. bei Team◇──Mitglied steht die Raute am Team)."
+    },
+    {
+        question: "Wie wird Vererbung im Klassendiagramm dargestellt?",
+        correct: "Durchgezogene Linie mit LEEREM Dreieck zur Oberklasse",
+        wrong: ["Gestrichelte Linie mit offener Pfeilspitze", "Durchgezogene Linie mit gefülltem Dreieck", "Durchgezogene Linie mit Raute"],
+        explanation: "Vererbung wird mit einer durchgezogenen Linie und einem LEEREN Dreieck (△) dargestellt, das zur Oberklasse zeigt."
+    },
+    {
+        question: "Was bedeutet die Multiplizität '1..*' im Klassendiagramm?",
+        correct: "Mindestens eins (eins bis beliebig viele)",
+        wrong: ["Genau eins", "Null oder mehr", "Null oder eins"],
+        explanation: "'1..*' bedeutet 'mindestens eins' - es muss mindestens ein Element existieren, können aber auch mehr sein."
+    },
+    {
+        question: "Was bedeutet das Sichtbarkeitssymbol '#' bei einem Attribut?",
+        correct: "Protected - sichtbar für Klasse und Unterklassen",
+        wrong: ["Private - nur in der Klasse selbst sichtbar", "Public - überall sichtbar", "Package - nur im gleichen Paket sichtbar"],
+        explanation: "# = protected: Das Attribut ist in der Klasse selbst UND in allen Unterklassen (Vererbung) sichtbar."
+    },
+    {
+        question: "Wie wird eine gerichtete (unidirektionale) Assoziation dargestellt?",
+        correct: "Linie mit offener Pfeilspitze in Navigationsrichtung",
+        wrong: ["Linie ohne Pfeil", "Linie mit gefülltem Dreieck", "Gestrichelte Linie"],
+        explanation: "Eine gerichtete Assoziation zeigt mit einer offenen Pfeilspitze (>) die Navigationsrichtung an."
+    },
+    {
+        question: "Was bedeutet die Multiplizität '0..1'?",
+        correct: "Optional - keins oder genau eins",
+        wrong: ["Genau eins", "Mindestens eins", "Beliebig viele"],
+        explanation: "'0..1' bedeutet optional: Es kann kein Element oder genau ein Element existieren (z.B. Person hat 0..1 Ehepartner)."
+    },
+    
+    // SEQUENZDIAGRAMM (5 Fragen)
+    {
+        question: "Wie wird eine synchrone Nachricht im Sequenzdiagramm dargestellt?",
+        correct: "Durchgezogene Linie mit gefüllter Dreieckspitze (▶)",
+        wrong: ["Gestrichelte Linie mit offener Pfeilspitze", "Durchgezogene Linie mit offener Pfeilspitze", "Gestrichelte Linie mit gefüllter Pfeilspitze"],
+        explanation: "Synchrone Nachrichten haben eine durchgezogene Linie mit GEFÜLLTER Dreieckspitze (▶). Der Sender wartet auf die Antwort."
+    },
+    {
+        question: "Wie wird eine Rückgabenachricht im Sequenzdiagramm dargestellt?",
+        correct: "Gestrichelte Linie mit offener Pfeilspitze",
+        wrong: ["Durchgezogene Linie mit gefüllter Pfeilspitze", "Durchgezogene Linie mit offener Pfeilspitze", "Doppelte durchgezogene Linie"],
+        explanation: "Rückgabenachrichten werden mit einer GESTRICHELTEN Linie und OFFENER Pfeilspitze dargestellt."
+    },
+    {
+        question: "Welches Fragment wird für alternative Abläufe (if-else) verwendet?",
+        correct: "alt",
+        wrong: ["opt", "loop", "par"],
+        explanation: "'alt' (alternative) wird für Verzweigungen mit mehreren Alternativen verwendet, getrennt durch gestrichelte Linien mit [Guards]."
+    },
+    {
+        question: "Was zeigt der Aktivierungsbalken im Sequenzdiagramm an?",
+        correct: "Das Objekt führt gerade Code aus / ist aktiv",
+        wrong: ["Das Objekt wurde gelöscht", "Das Objekt wartet auf Eingabe", "Das Objekt ist im Ruhezustand"],
+        explanation: "Der schmale Balken auf der Lebenslinie zeigt, dass das Objekt gerade aktiv ist und Code ausführt."
+    },
+    {
+        question: "Wofür steht das Fragment 'opt' im Sequenzdiagramm?",
+        correct: "Optionaler Ablauf (if ohne else)",
+        wrong: ["Alternative Abläufe (if-else)", "Schleife", "Parallele Ausführung"],
+        explanation: "'opt' steht für optional - der enthaltene Ablauf wird nur ausgeführt, wenn die Bedingung erfüllt ist (if ohne else)."
+    },
+    
+    // AKTIVITÄTSDIAGRAMM (4 Fragen)
+    {
+        question: "Womit wird eine Entscheidung (Decision) im Aktivitätsdiagramm zusammengeführt?",
+        correct: "Mit einer Merge-Raute (◇)",
+        wrong: ["Mit einem Join-Balken (▬)", "Mit dem Endknoten", "Mit einer weiteren Decision"],
+        explanation: "Regel: Raute → Raute! Eine Entscheidung (Decision) wird IMMER mit einer Merge-Raute zusammengeführt."
+    },
+    {
+        question: "Womit werden parallele Pfade (Fork) synchronisiert?",
+        correct: "Mit einem Join-Balken (▬)",
+        wrong: ["Mit einer Merge-Raute (◇)", "Mit dem Endknoten", "Mit einer Decision"],
+        explanation: "Regel: Balken → Balken! Ein Fork (▬) wird IMMER mit einem Join (▬) synchronisiert."
+    },
+    {
+        question: "Wie sieht der Endknoten im Aktivitätsdiagramm aus?",
+        correct: "Kreis mit gefülltem Innenpunkt (◉)",
+        wrong: ["Gefüllter schwarzer Kreis (●)", "Leerer Kreis", "Raute"],
+        explanation: "Der Endknoten ist ein Kreis mit einem gefüllten Innenpunkt (◉). Der Startknoten ist nur ein gefüllter Kreis (●)."
+    },
+    {
+        question: "Was zeigen Swimlanes im Aktivitätsdiagramm an?",
+        correct: "Verantwortungsbereiche / Wer führt die Aktivität aus",
+        wrong: ["Parallelität", "Zeitliche Reihenfolge", "Priorität der Aktivitäten"],
+        explanation: "Swimlanes teilen das Diagramm in Bahnen und zeigen, WER für welche Aktivität verantwortlich ist."
+    },
+    
+    // ZUSTANDSDIAGRAMM (4 Fragen)
+    {
+        question: "Was bedeutet 'entry /' in einem Zustand?",
+        correct: "Aktion wird beim Eintritt in den Zustand ausgeführt",
+        wrong: ["Aktion wird beim Verlassen ausgeführt", "Aktion wird während des Zustands ausgeführt", "Aktion wird beim Übergang ausgeführt"],
+        explanation: "'entry /' definiert eine Aktion, die beim Eintritt in den Zustand ausgeführt wird."
+    },
+    {
+        question: "Was bedeutet 'do /' in einem Zustand?",
+        correct: "Aktion wird während des Zustands ausgeführt (unterbrechbar)",
+        wrong: ["Aktion wird beim Eintritt ausgeführt", "Aktion wird beim Verlassen ausgeführt", "Aktion wird nur einmal ausgeführt"],
+        explanation: "'do /' definiert eine Aktivität, die während des Zustands läuft und bei Verlassen unterbrochen wird."
+    },
+    {
+        question: "Wie wird eine Transition (Übergang) im Zustandsdiagramm beschriftet?",
+        correct: "Ereignis [Guard] / Aktion (alle Teile optional)",
+        wrong: ["Nur mit dem Ereignisnamen", "Immer mit Guard erforderlich", "Nur mit der Aktion"],
+        explanation: "Format: Ereignis [Guard] / Aktion - alle drei Teile sind optional, aber mindestens eines sollte vorhanden sein."
+    },
+    {
+        question: "Was ist der Unterschied zwischen Startzustand und Endzustand?",
+        correct: "Start: gefüllter Kreis (●), Ende: Kreis mit Punkt (◉)",
+        wrong: ["Start: leerer Kreis, Ende: gefüllter Kreis", "Beide sind gefüllte Kreise", "Start: Raute, Ende: Kreis"],
+        explanation: "Startzustand = gefüllter schwarzer Kreis (●). Endzustand = Kreis mit gefülltem Innenpunkt (◉), auch 'Bullseye' genannt."
+    }
+];
+
+// Shuffle-Funktion (Fisher-Yates)
+function shuffle(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+// Fragen vorbereiten mit randomisierten Antwortpositionen
+function prepareQuestions() {
+    return shuffle(questionPool).map(q => {
+        // Alle Antworten zusammenfassen
+        const allOptions = [q.correct, ...q.wrong];
+        // Antworten mischen
+        const shuffledOptions = shuffle(allOptions);
+        // Neue Position der korrekten Antwort finden
+        const correctIndex = shuffledOptions.indexOf(q.correct);
+        
+        return {
+            question: q.question,
+            options: shuffledOptions,
+            correct: correctIndex,
+            explanation: q.explanation
+        };
+    });
+}
+
+let questions = prepareQuestions();
+const totalQuestions = questions.length;
+let currentQuestion = 0;
+let score = 0;
+let answered = new Array(totalQuestions).fill(false);
+
+function renderQuiz() {
+    const container = document.getElementById('quizContainer');
+    container.innerHTML = '';
+    
+    const q = questions[currentQuestion];
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'question-' + currentQuestion;
+    
+    let optionsHtml = q.options.map((opt, i) => 
+        `<div class="option" onclick="selectAnswer(${i})" id="option-${currentQuestion}-${i}">
+            <span class="option-letter">${String.fromCharCode(65+i)}</span>
+            <span>${opt}</span>
+        </div>`
+    ).join('');
+    
+    card.innerHTML = `
+        <span class="question-number">Frage ${currentQuestion + 1}</span>
+        <p class="question-text">${q.question}</p>
+        <div class="options">${optionsHtml}</div>
+        <div class="explanation" id="explanation-${currentQuestion}">
+            <strong>💡 Erklärung:</strong> ${q.explanation}
+        </div>
+    `;
+    container.appendChild(card);
+    
+    document.getElementById('currentQ').textContent = currentQuestion + 1;
+    document.getElementById('progressFill').style.width = ((currentQuestion + 1) / totalQuestions * 100) + '%';
+    document.getElementById('nextBtn').disabled = !answered[currentQuestion];
+    document.getElementById('nextBtn').textContent = currentQuestion === totalQuestions - 1 ? '✅ Ergebnis anzeigen' : 'Nächste Frage →';
+}
+
+function selectAnswer(selected) {
+    if (answered[currentQuestion]) return;
+    
+    answered[currentQuestion] = true;
+    const q = questions[currentQuestion];
+    const correct = q.correct;
+    
+    document.querySelectorAll(`#question-${currentQuestion} .option`).forEach((opt, i) => {
+        opt.classList.add('disabled');
+        if (i === correct) opt.classList.add('correct');
+        if (i === selected && selected !== correct) opt.classList.add('wrong');
+    });
+    
+    if (selected === correct) {
+        score++;
+        document.getElementById('question-' + currentQuestion).classList.add('answered-correct');
+    } else {
+        document.getElementById('question-' + currentQuestion).classList.add('answered-wrong');
+    }
+    
+    document.getElementById('explanation-' + currentQuestion).classList.add('show');
+    document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQuestion() {
+    if (currentQuestion < totalQuestions - 1) {
+        currentQuestion++;
+        renderQuiz();
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    } else {
+        showResult();
+    }
+}
+
+function showResult() {
+    document.getElementById('quizContainer').innerHTML = '';
+    document.getElementById('nextBtn').style.display = 'none';
+    document.querySelector('.progress-bar').style.display = 'none';
+    document.querySelector('.progress-text').style.display = 'none';
+    
+    const resultCard = document.getElementById('resultCard');
+    resultCard.classList.add('show');
+    document.getElementById('resultScore').textContent = score + '/' + totalQuestions;
+    
+    const percent = score / totalQuestions * 100;
+    let emoji, text;
+    if (percent >= 90) { emoji = '🏆'; text = 'Hervorragend! Du bist UML-Experte!'; }
+    else if (percent >= 75) { emoji = '🎉'; text = 'Sehr gut! Fast perfekt!'; }
+    else if (percent >= 60) { emoji = '👍'; text = 'Gut gemacht! Aber noch Luft nach oben.'; }
+    else if (percent >= 40) { emoji = '📖'; text = 'Schau dir das Cheatsheet nochmal an!'; }
+    else { emoji = '📚'; text = 'Mehr üben! Die Aufgaben helfen dir weiter.'; }
+    
+    document.getElementById('resultEmoji').textContent = emoji;
+    document.getElementById('resultText').textContent = text;
+}
+
+function restartQuiz() {
+    // Fragen neu mischen
+    questions = prepareQuestions();
+    currentQuestion = 0;
+    score = 0;
+    answered = new Array(totalQuestions).fill(false);
+    
+    document.getElementById('resultCard').classList.remove('show');
+    document.getElementById('nextBtn').style.display = 'inline-block';
+    document.querySelector('.progress-bar').style.display = 'block';
+    document.querySelector('.progress-text').style.display = 'block';
+    
+    renderQuiz();
+}
+
+// Dark Mode
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('uml_dark_mode', isDark);
+    document.querySelector('.dark-toggle').textContent = isDark ? '☀️' : '🌙';
+}
+if (localStorage.getItem('uml_dark_mode') === 'true') {
+    document.body.classList.add('dark-mode');
+}
+
+// Start
+document.getElementById('questionCountHeader').textContent = totalQuestions + ' Fragen zu UML 2.5.1';
+document.getElementById('totalQ').textContent = totalQuestions;
+renderQuiz();
+</script>
+<button class="dark-toggle" onclick="toggleDarkMode()" title="Dark Mode">🌙</button>
+<script>if(localStorage.getItem('uml_dark_mode')==='true')document.querySelector('.dark-toggle').textContent='☀️';</script>
+</body>
+</html>

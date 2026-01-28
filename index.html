@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UML Lernplattform - Fachinformatiker</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+        header { background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%); color: white; padding: 40px; text-align: center; }
+        header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        header p { font-size: 1.2em; opacity: 0.9; }
+        nav { display: flex; background: #f8f9fa; border-bottom: 3px solid #0EA5E9; justify-content: center; gap: 10px; padding: 10px; flex-wrap: wrap; }
+        nav a { padding: 18px 35px; text-decoration: none; font-size: 1.1em; font-weight: 600; color: #666; transition: all 0.3s; border-radius: 10px; }
+        nav a:hover { background: rgba(102, 126, 234, 0.1); color: #0EA5E9; }
+        nav a.active { background: #0EA5E9; color: white; }
+        .content { padding: 40px; }
+        .intro-section { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; padding: 40px; margin-bottom: 30px; }
+        .intro-section h2 { color: #0EA5E9; font-size: 2em; margin-bottom: 20px; }
+        .diagram-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 30px 0; }
+        .diagram-card { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: all 0.3s; border: 2px solid transparent; cursor: pointer; text-decoration: none; color: inherit; display: block; }
+        .diagram-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3); border-color: #0EA5E9; }
+        .diagram-card h3 { color: #0EA5E9; margin-bottom: 12px; font-size: 1.4em; }
+        .diagram-card p { color: #666; line-height: 1.6; }
+        .badge { display: inline-block; background: #0EA5E9; color: white; padding: 4px 12px; border-radius: 15px; font-size: 0.85em; font-weight: 600; margin-bottom: 10px; }
+        .info-box { background: #d1ecf1; border-left: 5px solid #17a2b8; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .info-box h4 { color: #0c5460; margin-bottom: 10px; }
+        .info-box-warning { background: #fff3cd; border-left: 5px solid #ffc107; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .info-box-warning h4 { color: #856404; margin-bottom: 10px; }
+        .info-box-warning p { color: #856404; }
+        .cta-section { margin-top: 40px; padding: 30px; background: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%); border-radius: 15px; color: white; text-align: center; }
+        .cta-section h3 { font-size: 1.8em; margin-bottom: 15px; }
+        .cta-btn { display: inline-block; background: white; color: #0EA5E9; padding: 15px 40px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 1.1em; margin-top: 15px; transition: transform 0.3s; }
+        .cta-btn:hover { transform: translateY(-3px); }
+        footer { background: #f8f9fa; padding: 20px; text-align: center; color: #666; }
+        @media (max-width: 768px) { nav a { padding: 12px 20px; font-size: 0.95em; } header h1 { font-size: 1.8em; } .content { padding: 20px; } }
+        /* Dark Mode */
+        .dark-toggle { position: fixed; bottom: 20px; right: 20px; background: #333; color: white; border: none; padding: 12px 16px; border-radius: 50px; cursor: pointer; font-size: 1.2em; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .dark-toggle:hover { background: #555; }
+        body.dark-mode { background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%); }
+        body.dark-mode .container { background: #1e293b; color: #e2e8f0; }
+        body.dark-mode header { background: linear-gradient(135deg, #0369a1 0%, #0c4a6e 100%); }
+        body.dark-mode header p { color: rgba(255,255,255,0.9); }
+        body.dark-mode nav { background: #334155; border-color: #0EA5E9; }
+        body.dark-mode nav a { color: #94a3b8; }
+        body.dark-mode nav a:hover { background: rgba(14,165,233,0.2); color: #0EA5E9; }
+        body.dark-mode .intro-section { background: linear-gradient(135deg, #334155 0%, #1e293b 100%); }
+        body.dark-mode .intro-section h2 { color: #38bdf8; }
+        body.dark-mode .diagram-card { background: #334155; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        body.dark-mode .diagram-card:hover { box-shadow: 0 10px 25px rgba(14,165,233,0.4); }
+        body.dark-mode .diagram-card h3 { color: #38bdf8; }
+        body.dark-mode .diagram-card p { color: #94a3b8; }
+        body.dark-mode .info-box { background: #164e63; border-color: #06b6d4; }
+        body.dark-mode .info-box, body.dark-mode .info-box h4 { color: #a5f3fc; }
+        body.dark-mode .info-box-warning { background: #422006; border-color: #f59e0b; }
+        body.dark-mode .info-box-warning, body.dark-mode .info-box-warning h4, body.dark-mode .info-box-warning p { color: #fcd34d; }
+        body.dark-mode footer { background: #334155; color: #94a3b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 UML Lernplattform</h1>
+            <p>Interaktive Einführung für Fachinformatiker</p>
+        </header>
+        <nav>
+            <a href="index.html" class="active">🏠 Übersicht</a>
+            <a href="aufgaben.html">📝 Aufgaben</a>
+            <a href="cheatsheet.html">📋 Cheatsheet</a>
+            <a href="quiz.html">🎯 Quiz</a>
+        <a href="ihk-training.html">📋 AP2-Training</a>
+        <a href="ap1-training.html">📋 AP1-Training</a>
+        </nav>
+        <div class="content">
+            <div class="intro-section">
+                <h2>Willkommen zur UML-Lernplattform! 🚀</h2>
+                <p style="font-size: 1.1em; line-height: 1.8; color: #333;">
+                    Diese interaktive Plattform hilft dir, die wichtigsten UML-Diagramme zu lernen und zu üben. 
+                    Nutze die Navigation oben, um zwischen den verschiedenen Bereichen zu wechseln.
+                </p>
+            </div>
+            <h3 style="color: #0EA5E9; font-size: 1.8em; margin-bottom: 20px;">Die 5 wichtigsten Diagrammtypen</h3>
+            <div class="diagram-grid">
+                <a class="diagram-card" href="aufgaben.html?tab=usecase">
+                    <span class="badge">Strukturell</span>
+                    <h3>🎭 Use-Case-Diagramm</h3>
+                    <p>Zeigt WAS das System können soll. Funktionen aus Benutzersicht.</p>
+                </a>
+                <a class="diagram-card" href="aufgaben.html?tab=class">
+                    <span class="badge">Strukturell</span>
+                    <h3>📦 Klassendiagramm</h3>
+                    <p>Die Struktur des Systems mit Klassen, Attributen und Beziehungen.</p>
+                </a>
+                <a class="diagram-card" href="aufgaben.html?tab=sequence">
+                    <span class="badge">Verhalten</span>
+                    <h3>⏱️ Sequenzdiagramm</h3>
+                    <p>Zeitliche Abfolge von Nachrichten zwischen Objekten.</p>
+                </a>
+                <a class="diagram-card" href="aufgaben.html?tab=activity">
+                    <span class="badge">Verhalten</span>
+                    <h3>🔄 Aktivitätsdiagramm</h3>
+                    <p>Ablauf von Prozessen und Aktivitäten.</p>
+                </a>
+                <a class="diagram-card" href="aufgaben.html?tab=state">
+                    <span class="badge">Verhalten</span>
+                    <h3>📊 Zustandsdiagramm</h3>
+                    <p>Zeigt verschiedene Zustände eines Objekts.</p>
+                </a>
+            </div>
+            <div class="info-box">
+                <h4>💡 So nutzt du diese Plattform optimal:</h4>
+                <ol style="padding-left: 20px; color: #0c5460;">
+                    <li style="margin: 10px 0;"><strong>Aufgaben:</strong> 13 praxisnahe Übungen mit Musterlösungen</li>
+                    <li style="margin: 10px 0;"><strong>Cheatsheet:</strong> Schnelle Übersicht aller UML-Notationen</li>
+                    <li style="margin: 10px 0;"><strong>Quiz:</strong> 29 Multiple-Choice-Fragen (randomisiert)</li>
+                    <li style="margin: 10px 0;"><strong>IHK-Training:</strong> AP1 (UML) + AP2 Prüfungsaufgaben mit Timer (NEU!)</li>
+                </ol>
+            </div>
+            <div class="info-box-warning">
+                <h4>🎯 IHK-Prüfungsvorbereitung</h4>
+                <p>Diese Plattform ist speziell auf die IHK-Abschlussprüfung für Fachinformatiker ausgerichtet.</p>
+            </div>
+            <div class="cta-section" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); margin-bottom: 20px;">
+                <h3>🆕 NEU: IHK-Prüfungstraining</h3>
+                <p style="font-size: 1.1em;">AP1 (UML) + AP2 Aufgaben im echten Prüfungsformat mit Timer!</p>
+                <a href="ap1-training.html" class="cta-btn" style="color: #28a745; margin-right: 10px;">📋 AP1-Training (UML) →</a>
+                <a href="ihk-training.html" class="cta-btn" style="color: #28a745;">📋 AP2-Training →</a>
+            </div>
+            <div class="cta-section">
+                <h3>Bereit zu starten?</h3>
+                <p style="font-size: 1.1em;">Klicke auf "Aufgaben" um mit den Übungen zu beginnen!</p>
+                <a href="aufgaben.html" class="cta-btn">📝 Zu den Aufgaben →</a>
+            </div>
+        </div>
+        <footer>🎓 UML Lernplattform für Fachinformatiker</footer>
+    </div>
+<button class="dark-toggle" onclick="toggleDarkMode()" title="Dark Mode">🌙</button>
+<script>
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    localStorage.setItem('uml_dark_mode', isDark);
+    document.querySelector('.dark-toggle').textContent = isDark ? '☀️' : '🌙';
+}
+window.onload = function() {
+    if (localStorage.getItem('uml_dark_mode') === 'true') {
+        document.body.classList.add('dark-mode');
+        document.querySelector('.dark-toggle').textContent = '☀️';
+    }
+};
+</script>
+</body>
+</html>
